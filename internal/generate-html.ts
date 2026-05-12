@@ -238,20 +238,18 @@ function buildPage(sections: Section[], entries: Map<string, Entry>): string {
   --shadow: 0 2px 8px rgba(0,0,0,0.06);
   --radius: 10px;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1e1c1a;
-    --fg: #e8e2d9;
-    --muted: #a39b91;
-    --border: #3a3530;
-    --accent: #6db5a3;
-    --accent-light: #2a3f3a;
-    --sidebar-bg: #262320;
-    --code-bg: #2e2b28;
-    --zh-bg: #2a2724;
-    --zh-border: #454038;
-    --shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
+[data-theme="dark"] {
+  --bg: #1e1c1a;
+  --fg: #e8e2d9;
+  --muted: #a39b91;
+  --border: #3a3530;
+  --accent: #6db5a3;
+  --accent-light: #2a3f3a;
+  --sidebar-bg: #262320;
+  --code-bg: #2e2b28;
+  --zh-bg: #2a2724;
+  --zh-border: #454038;
+  --shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -362,10 +360,44 @@ body {
   color: #fff;
   box-shadow: var(--shadow);
 }
-@media (prefers-color-scheme: dark) {
-  .lang-toggle button:hover {
-    background: rgba(255,255,255,0.06);
-  }
+[data-theme="dark"] .lang-toggle button:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+/* Theme toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.theme-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+.theme-icon-light,
+.theme-icon-dark {
+  display: none;
+}
+[data-theme="light"] .theme-icon-light,
+:not([data-theme]) .theme-icon-light {
+  display: inline;
+}
+[data-theme="dark"] .theme-icon-dark {
+  display: inline;
 }
 
 /* Sidebar */
@@ -430,11 +462,9 @@ body {
   padding: 1px 4px;
   font-weight: 600;
 }
-@media (prefers-color-scheme: dark) {
-  .toc-term mark {
-    background: #8a7a4a;
-    color: #e8e2d9;
-  }
+[data-theme="dark"] .toc-term mark {
+  background: #8a7a4a;
+  color: #e8e2d9;
 }
 
 /* Content */
@@ -582,6 +612,10 @@ body.lang-zh .toc-term {
       <button data-lang="en">EN</button>
       <button data-lang="zh">ZH</button>
     </div>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode" aria-label="Toggle dark/light mode">
+      <span class="theme-icon-light">☀️</span>
+      <span class="theme-icon-dark">🌙</span>
+    </button>
   </header>
   <nav class="sidebar">
     ${sidebarItems.join("\n")}
@@ -597,6 +631,50 @@ body.lang-zh .toc-term {
   const entries = document.querySelectorAll('.entry');
   const tocSections = document.querySelectorAll('.toc-section');
   const langBtns = document.querySelectorAll('.lang-toggle button');
+
+  // Theme management
+  const THEME_KEY = 'dic-theme';
+  function getSystemTheme() {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function getStoredTheme() {
+    return localStorage.getItem(THEME_KEY);
+  }
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  }
+  function setLangClass(lang) {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    document.body.className = 'lang-' + lang;
+    if (current) html.setAttribute('data-theme', current);
+  }
+
+  // Init theme
+  const stored = getStoredTheme();
+  applyTheme(stored || getSystemTheme());
+
+  // Theme toggle button
+  const themeBtn = document.getElementById('theme-toggle');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      localStorage.setItem(THEME_KEY, next);
+    });
+  }
+
+  // Listen for system theme changes (only if user hasn't manually set)
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!getStoredTheme()) {
+      applyTheme(e.matches ? 'dark' : 'light');
+    }
+  });
 
   // Search
   searchInput.addEventListener('input', (e) => {
@@ -630,7 +708,7 @@ body.lang-zh .toc-term {
     btn.addEventListener('click', () => {
       langBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      document.body.className = 'lang-' + btn.dataset.lang;
+      setLangClass(btn.dataset.lang);
     });
   });
 
