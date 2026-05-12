@@ -9,6 +9,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = dirname(HERE);
 const CURRICULUM = join(HERE, "Curriculum.md");
 const TEMPLATE = join(HERE, "README.template.md");
+const TERM_ZH = join(HERE, "term-zh.json");
 const DICT_DIR = join(ROOT, "dictionary");
 const OUTPUT = join(ROOT, "README.md");
 const MARKER = "<!-- CURRICULUM -->";
@@ -19,6 +20,7 @@ const BULLET_RE = /^- (.+)$/;
 const LINK_RE = /\[([^\]]+)\]\(\.\/([^)]+)\.md\)/g;
 
 type Section = { heading: string; terms: string[] };
+type Frontmatter = { body: string; description: string | null; description_zh: string | null };
 
 function fail(msg: string): never {
   console.error(msg);
@@ -69,11 +71,22 @@ function parseCurriculum(text: string): Section[] {
   return sections;
 }
 
-function stripFrontmatter(body: string): string {
-  if (!body.startsWith("---\n")) return body;
+function parseFrontmatter(body: string): Frontmatter {
+  if (!body.startsWith("---\n")) return { body, description: null, description_zh: null };
   const end = body.indexOf("\n---\n", 4);
-  if (end === -1) return body;
-  return body.slice(end + 5).replace(/^\n+/, "");
+  if (end === -1) return { body, description: null, description_zh: null };
+  const fm = body.slice(4, end);
+  const rest = body.slice(end + 5).replace(/^\n+/, "");
+
+  let description: string | null = null;
+  let description_zh: string | null = null;
+  for (const line of fm.split("\n")) {
+    const dMatch = line.match(/^description:\s*(.*)$/);
+    if (dMatch) description = dMatch[1].trim();
+    const dzMatch = line.match(/^description_zh:\s*(.*)$/);
+    if (dzMatch) description_zh = dzMatch[1].trim();
+  }
+  return { body: rest, description, description_zh };
 }
 
 function rewriteLinks(body: string): string {
@@ -89,6 +102,13 @@ function main(): void {
 
   const sections = parseCurriculum(readFileSync(CURRICULUM, "utf8"));
 
+  let termZh: Record<string, string> = {};
+  try {
+    termZh = JSON.parse(readFileSync(TERM_ZH, "utf8")) as Record<string, string>;
+  } catch {
+    // no Chinese titles available
+  }
+
   const seen = new Set<string>();
   const parts: string[] = [];
   for (const section of sections) {
@@ -103,7 +123,15 @@ function main(): void {
       } catch {
         fail(`Curriculum.md references "${term}" but ${entryPath} does not exist`);
       }
-      parts.push(`### ${term}`, "", rewriteLinks(stripFrontmatter(body).trimEnd()), "");
+      const zhTitle = termZh[term] || term;
+      const fm = parseFrontmatter(body);
+      parts.push(`### ${term} / ${zhTitle}`, "");
+      if (fm.description && fm.description_zh) {
+        parts.push(`> **${fm.description}**`, "");
+        parts.push(`> **中文：** ${fm.description_zh}`, "");
+        parts.push("");
+      }
+      parts.push(rewriteLinks(fm.body).trimEnd(), "");
     }
   }
 
@@ -117,7 +145,10 @@ function main(): void {
   const toc = sections
     .map((s) => {
       const terms = s.terms
-        .map((t) => `- [${t}](#${headingSlug(t)})`)
+        .map((t) => {
+          const zh = termZh[t] || t;
+          return `- [${t} / ${zh}](#${headingSlug(t)})`;
+        })
         .join("\n");
       return [
         "<details>",
