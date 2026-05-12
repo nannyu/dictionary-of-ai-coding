@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Coding Dictionary / AI 编程词典</title>
+<style>
+:root {
+  --bg: #fafafa;
+  --fg: #1a1a1a;
+  --muted: #666;
+  --border: #e0e0e0;
+  --accent: #2563eb;
+  --accent-light: #dbeafe;
+  --sidebar-bg: #f5f5f5;
+  --code-bg: #f0f0f0;
+  --zh-bg: #f8f9fa;
+  --zh-border: #d1d5db;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f0f;
+    --fg: #e5e5e5;
+    --muted: #999;
+    --border: #333;
+    --accent: #60a5fa;
+    --accent-light: #1e3a5f;
+    --sidebar-bg: #171717;
+    --code-bg: #262626;
+    --zh-bg: #1a1a1a;
+    --zh-border: #404040;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.7;
+}
+.app {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "header header" "sidebar content";
+  height: 100vh;
+  overflow: hidden;
+}
+@media (max-width: 768px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: "header" "sidebar" "content";
+    height: auto;
+    overflow: visible;
+  }
+}
+
+/* Header */
+.header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  z-index: 10;
+}
+.header-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+}
+.header-title a {
+  color: var(--fg);
+  text-decoration: none;
+}
+.search-box {
+  flex: 1;
+  max-width: 400px;
+  position: relative;
+}
+.search-box input {
+  width: 100%;
+  padding: 8px 12px 8px 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 0.9rem;
+  outline: none;
+}
+.search-box input:focus {
+  border-color: var(--accent);
+}
+.search-box::before {
+  content: "🔍";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  opacity: 0.5;
+}
+.lang-toggle {
+  display: flex;
+  gap: 4px;
+  background: var(--sidebar-bg);
+  border-radius: var(--radius);
+  padding: 2px;
+  border: 1px solid var(--border);
+}
+.lang-toggle button {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 500;
+}
+.lang-toggle button.active {
+  background: var(--accent);
+  color: white;
+}
+
+/* Sidebar */
+.sidebar {
+  grid-area: sidebar;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 12px;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 40vh;
+  }
+}
+.toc-section {
+  margin-bottom: 8px;
+}
+.toc-section summary {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+.toc-section summary:hover {
+  background: var(--border);
+}
+.toc-terms {
+  display: flex;
+  flex-direction: column;
+  padding-left: 4px;
+}
+.toc-term {
+  padding: 5px 8px;
+  font-size: 0.88rem;
+  color: var(--fg);
+  text-decoration: none;
+  border-radius: var(--radius);
+  line-height: 1.4;
+}
+.toc-term:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+.toc-term.hidden {
+  display: none;
+}
+.toc-term mark {
+  background: #fde047;
+  color: #1a1a1a;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* Content */
+.content {
+  grid-area: content;
+  overflow-y: auto;
+  padding: 24px 32px;
+  max-width: 800px;
+}
+@media (max-width: 768px) {
+  .content { padding: 16px; }
+}
+
+.section-heading {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 40px 0 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+  color: var(--fg);
+}
+.section-heading:first-of-type {
+  margin-top: 0;
+}
+
+.entry {
+  margin-bottom: 40px;
+  scroll-margin-top: 60px;
+}
+.entry-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: var(--fg);
+}
+.entry-description {
+  background: var(--accent-light);
+  border-left: 4px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin-bottom: 16px;
+}
+.entry-description p {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+}
+.entry-description p:last-child {
+  margin-bottom: 0;
+}
+.entry-body p,
+.entry-body ul,
+.entry-body blockquote {
+  margin: 0 0 12px;
+}
+.entry-body ul {
+  padding-left: 24px;
+}
+.entry-body li {
+  margin-bottom: 4px;
+}
+.entry-body blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 14px;
+  color: var(--muted);
+  font-style: italic;
+}
+.entry-body code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+}
+.entry-body a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.entry-body a:hover {
+  text-decoration: underline;
+}
+
+.zh {
+  color: var(--muted);
+  border-left: 3px solid var(--zh-border);
+  padding-left: 14px;
+  margin-top: 8px;
+  background: var(--zh-bg);
+  padding: 10px 14px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.entry-description .zh {
+  background: transparent;
+  border-left-color: var(--accent);
+  padding: 4px 0 0 14px;
+  margin-top: 6px;
+}
+
+/* Lang modes */
+body.lang-en .zh { display: none; }
+body.lang-zh .entry-body p:not(.zh) { display: none; }
+body.lang-zh .entry-body ul:not(:has(+ .zh)) { display: none; }
+body.lang-zh .entry-body blockquote:not(:has(+ .zh)) { display: none; }
+body.lang-zh .entry-description p:first-child { display: none; }
+body.lang-zh .entry-title { font-size: 1.3rem; }
+body.lang-zh .toc-term {
+  font-size: 0.95rem;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* No results */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+</style>
+</head>
+<body class="lang-both">
+<div class="app">
+  <header class="header">
+    <h1 class="header-title"><a href="#">AI Coding Dictionary / AI 编程词典</a></h1>
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Search terms... / 搜索词条..." autocomplete="off">
+    </div>
+    <div class="lang-toggle">
+      <button data-lang="both" class="active">EN+ZH</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="zh">ZH</button>
+    </div>
+  </header>
+  <nav class="sidebar">
+    <details class="toc-section" open><summary>Section 1 — The Model / 模型</summary><div class="toc-terms"><a href="#model" class="toc-term" data-term="Model">Model / 模型</a><a href="#parameters" class="toc-term" data-term="Parameters">Parameters / 参数</a><a href="#training" class="toc-term" data-term="Training">Training / 训练</a><a href="#inference" class="toc-term" data-term="Inference">Inference / 推理</a><a href="#token" class="toc-term" data-term="Token">Token / 词元</a><a href="#next-token-prediction" class="toc-term" data-term="Next-token prediction">Next-token prediction / 下一个词元预测</a><a href="#non-determinism" class="toc-term" data-term="Non-determinism">Non-determinism / 非确定性</a><a href="#model-provider" class="toc-term" data-term="Model provider">Model provider / 模型提供商</a><a href="#harness" class="toc-term" data-term="Harness">Harness / Harness</a><a href="#model-provider-request" class="toc-term" data-term="Model provider request">Model provider request / 模型提供商请求</a><a href="#input-tokens" class="toc-term" data-term="Input tokens">Input tokens / 输入词元</a><a href="#output-tokens" class="toc-term" data-term="Output tokens">Output tokens / 输出词元</a><a href="#prefix-cache" class="toc-term" data-term="Prefix cache">Prefix cache / 前缀缓存</a><a href="#cache-tokens" class="toc-term" data-term="Cache tokens">Cache tokens / 缓存词元</a></div></details>
+<details class="toc-section" open><summary>Section 2 — Sessions, Context Windows & Turns / 会话、上下文窗口与轮次</summary><div class="toc-terms"><a href="#stateless" class="toc-term" data-term="Stateless">Stateless / 无状态</a><a href="#context" class="toc-term" data-term="Context">Context / 上下文</a><a href="#context-window" class="toc-term" data-term="Context window">Context window / 上下文窗口</a><a href="#stateful" class="toc-term" data-term="Stateful">Stateful / 有状态</a><a href="#agent" class="toc-term" data-term="Agent">Agent / 智能体</a><a href="#system-prompt" class="toc-term" data-term="System prompt">System prompt / 系统提示词</a><a href="#session" class="toc-term" data-term="Session">Session / 会话</a><a href="#turn" class="toc-term" data-term="Turn">Turn / 轮次</a></div></details>
+<details class="toc-section" open><summary>Section 3 — Tools & Environment / 工具与环境</summary><div class="toc-terms"><a href="#environment" class="toc-term" data-term="Environment">Environment / 环境</a><a href="#filesystem" class="toc-term" data-term="Filesystem">Filesystem / 文件系统</a><a href="#tool" class="toc-term" data-term="Tool">Tool / 工具</a><a href="#tool-call" class="toc-term" data-term="Tool call">Tool call / 工具调用</a><a href="#tool-result" class="toc-term" data-term="Tool result">Tool result / 工具结果</a><a href="#mcp" class="toc-term" data-term="MCP">MCP / MCP（模型上下文协议）</a><a href="#permission-request" class="toc-term" data-term="Permission request">Permission request / 权限请求</a><a href="#permission-mode" class="toc-term" data-term="Permission mode">Permission mode / 权限模式</a><a href="#agent-mode" class="toc-term" data-term="Agent mode">Agent mode / 智能体模式</a><a href="#sandbox" class="toc-term" data-term="Sandbox">Sandbox / 沙盒</a></div></details>
+<details class="toc-section" open><summary>Section 4 — Failure Modes / 失效模式</summary><div class="toc-terms"><a href="#sycophancy" class="toc-term" data-term="Sycophancy">Sycophancy / 谄媚</a><a href="#hallucination" class="toc-term" data-term="Hallucination">Hallucination / 幻觉</a><a href="#parametric-knowledge" class="toc-term" data-term="Parametric knowledge">Parametric knowledge / 参数化知识</a><a href="#knowledge-cutoff" class="toc-term" data-term="Knowledge cutoff">Knowledge cutoff / 知识截止</a><a href="#contextual-knowledge" class="toc-term" data-term="Contextual knowledge">Contextual knowledge / 上下文知识</a><a href="#attention-relationship" class="toc-term" data-term="Attention relationship">Attention relationship / 注意力关系</a><a href="#attention-budget" class="toc-term" data-term="Attention budget">Attention budget / 注意力预算</a><a href="#attention-degradation" class="toc-term" data-term="Attention degradation">Attention degradation / 注意力退化</a><a href="#smart-zone" class="toc-term" data-term="Smart zone">Smart zone / 智能区</a></div></details>
+<details class="toc-section" open><summary>Section 5 — Handoffs / 交接</summary><div class="toc-terms"><a href="#clearing" class="toc-term" data-term="Clearing">Clearing / 清空</a><a href="#handoff" class="toc-term" data-term="Handoff">Handoff / 交接</a><a href="#handoff-artifact" class="toc-term" data-term="Handoff artifact">Handoff artifact / 交接产物</a><a href="#spec" class="toc-term" data-term="Spec">Spec / 规格说明</a><a href="#ticket" class="toc-term" data-term="Ticket">Ticket / 工单</a><a href="#compaction" class="toc-term" data-term="Compaction">Compaction / 压缩</a><a href="#autocompact" class="toc-term" data-term="Autocompact">Autocompact / 自动压缩</a></div></details>
+<details class="toc-section" open><summary>Section 6 — Memory and Steering / 记忆与引导</summary><div class="toc-terms"><a href="#memory-system" class="toc-term" data-term="Memory system">Memory system / 记忆系统</a><a href="#agentsmd" class="toc-term" data-term="AGENTS.md">AGENTS.md / AGENTS.md</a><a href="#progressive-disclosure" class="toc-term" data-term="Progressive disclosure">Progressive disclosure / 渐进式披露</a><a href="#context-pointer" class="toc-term" data-term="Context pointer">Context pointer / 上下文指针</a><a href="#skill" class="toc-term" data-term="Skill">Skill / 技能</a><a href="#subagent" class="toc-term" data-term="Subagent">Subagent / 子智能体</a></div></details>
+<details class="toc-section" open><summary>Section 7 — Patterns of Work / 工作模式</summary><div class="toc-terms"><a href="#human-in-the-loop" class="toc-term" data-term="Human-in-the-loop">Human-in-the-loop / 人在回路中</a><a href="#afk" class="toc-term" data-term="AFK">AFK / AFK（离开键盘）</a><a href="#automated-check" class="toc-term" data-term="Automated check">Automated check / 自动检查</a><a href="#automated-review" class="toc-term" data-term="Automated review">Automated review / 自动审查</a><a href="#human-review" class="toc-term" data-term="Human review">Human review / 人工审查</a><a href="#vibe-coding" class="toc-term" data-term="Vibe coding">Vibe coding / Vibe编程</a><a href="#design-concept" class="toc-term" data-term="Design concept">Design concept / 设计概念</a><a href="#grilling" class="toc-term" data-term="Grilling">Grilling / 拷问</a></div></details>
+  </nav>
+  <main class="content" id="content">
+    <h2 class="section-heading">Section 1 — The Model / 模型</h2>
+<article id="model" class="entry" data-term="Model"><h3 class="entry-title">Model / 模型</h3>
+<div class="entry-description"><p>The parameters. Stateless — does next-token prediction and nothing else. Cannot do anything agentic on its own.</p><p class="zh" lang="zh-CN">参数。无状态——只进行下一个词元预测，其他什么都不做。自身无法执行任何智能体行为。</p></div>
+<div class="entry-body"><p>The <a href="#parameters">parameters</a>. <a href="#stateless">Stateless</a> — does <a href="#next-token-prediction">next-token prediction</a> and nothing else. "Claude Opus 4.7" and "GPT-5" are models. On its own a model can't do anything agentic; it has to be <a href="#harness">harnessed</a>.</p>
+<p class="zh" lang="zh-CN"><a href="#parameters">参数</a>。<a href="#stateless">无状态</a>——只进行<a href="#next-token-prediction">下一个词元预测</a>，其他什么都不做。"Claude Opus 4.7" 和 "GPT-5" 都是模型。模型自身无法执行任何智能体行为；它必须被<a href="#harness">harnessed</a>。</p>
+<p><em>Usage:</em></p>
+<p>"Should we switch the model from Sonnet to Opus for the planning step?"</p>
+<p class="zh" lang="zh-CN">"规划步骤我们应该把模型从 Sonnet 换成 Opus 吗？"</p>
+<p>"Try it — but the harness is doing most of the lifting on this task. The model swap won't help if the <a href="#system-prompt">system prompt</a> and <a href="#tool">tools</a> are wrong."</p>
+<p class="zh" lang="zh-CN">"可以试试——但在这个任务上主要是 harness 在出力。如果<a href="#system-prompt">系统提示词</a>和<a href="#tool">工具</a>有问题，换模型也没用。"</p></div></article>
+<article id="parameters" class="entry" data-term="Parameters"><h3 class="entry-title">Parameters / 参数</h3>
+<div class="entry-description"><p>The numbers inside a model — often billions — tuned during training. Everything the model knows lives in them. Also called weights.</p><p class="zh" lang="zh-CN">模型内部的数字——通常是数十亿个——在训练期间调整。模型知道的一切都存储在其中。也称为权重。</p></div>
+<div class="entry-body"><p>The numbers inside a <a href="#model">model</a> — often billions of them — tuned during <a href="#training">training</a>. Everything the model "knows" lives in them. Training sets them; <a href="#inference">inference</a> uses them unchanged. Also called <em>weights</em>.</p>
+<p class="zh" lang="zh-CN"><a href="#model">模型</a>内部的数字——通常是数十亿个——在<a href="#training">训练</a>期间调整。模型"知道"的一切都存储在其中。训练设定它们；<a href="#inference">推理</a>使用它们而不做改变。也称为<em>权重（weights）</em>。</p>
+<p><em>Usage:</em></p>
+<p>"Can we fine-tune it on our codebase?"</p>
+<p class="zh" lang="zh-CN">"我们能在我们的代码库上微调它吗？"</p>
+<p>"That'd update the parameters — different model afterwards. For one project it's almost always cheaper to load the codebase as <a href="#context">context</a> than to retrain."</p>
+<p class="zh" lang="zh-CN">"那会更新参数——之后就变成不同的模型了。对于单个项目来说，把代码库加载为<a href="#context">上下文</a>几乎总是比重训练更便宜。"</p></div></article>
+<article id="training" class="entry" data-term="Training"><h3 class="entry-title">Training / 训练</h3>
+<div class="entry-description"><p>The process that sets a model's parameters by exposing it to vast amounts of text and adjusting to improve next-token prediction.</p><p class="zh" lang="zh-CN">通过让模型接触海量文本并调整参数以改进下一个词元预测的过程，来设定模型参数。</p></div>
+<div class="entry-body"><p>The process that sets a <a href="#model">model</a>'s <a href="#parameters">parameters</a>, by exposing it to vast amounts of text and adjusting parameters to improve <a href="#next-token-prediction">next-token prediction</a>. A one-time, expensive process done by the <a href="#model-provider">model provider</a>. Encompasses both pre-training (the bulk run) and post-training (later refinements like instruction-following and safety); the distinction doesn't matter at this glossary's level.</p>
+<p class="zh" lang="zh-CN">通过让<a href="#model">模型</a>接触海量文本并调整<a href="#parameters">参数</a>以改进<a href="#next-token-prediction">下一个词元预测</a>的过程，来设定模型参数。由<a href="#model-provider">模型提供方</a>执行的一次性、高成本过程。包括预训练（主体运行）和后训练（后续的指令遵循和安全等精调）；在本词汇表的层面，这种区分并不重要。</p>
+<p><em>Usage:</em></p>
+<p>"Can we get it to know our internal API?"</p>
+<p class="zh" lang="zh-CN">"我们能让它了解我们的内部API吗？"</p>
+<p>"Not via training — that's a months-long process by the model provider. Load the API docs into <a href="#context">context</a> instead, that's the lever you actually have."</p>
+<p class="zh" lang="zh-CN">"不能通过训练——那是模型提供方需要数月完成的过程。把API文档加载到<a href="#context">上下文</a>中吧，这才是你实际能用的杠杆。"</p></div></article>
+<article id="inference" class="entry" data-term="Inference"><h3 class="entry-title">Inference / 推理</h3>
+<div class="entry-description"><p>Running a trained model to generate output — what happens on every model provider request. Parameters stay fixed.</p><p class="zh" lang="zh-CN">运行已训练的模型以生成输出——每次模型提供商请求时发生的事情。参数保持不变。</p></div>
+<div class="entry-body"><p>Running a trained <a href="#model">model</a> to generate output — what happens on every <a href="#model-provider-request">model provider request</a>. <a href="#parameters">Parameters</a> stay fixed; the model just does <a href="#next-token-prediction">next-token prediction</a> over the <a href="#context">context</a> it's given. Cheap relative to <a href="#training">training</a>, but billed per <a href="#token">token</a> and the dominant cost of using a model.</p>
+<p class="zh" lang="zh-CN">运行已训练的<a href="#model">模型</a>以生成输出——每次<a href="#model-provider-request">模型提供商请求</a>时发生的事情。<a href="#parameters">参数</a>保持不变；模型只是根据给定的<a href="#context">上下文</a>进行<a href="#next-token-prediction">下一个词元预测</a>。相对于<a href="#training">训练</a>来说成本较低，但按<a href="#token">词元</a>计费，是使用模型的主要成本。</p>
+<p><em>Usage:</em></p>
+<p>"Why does the bill scale with usage instead of being a flat license?"</p>
+<p class="zh" lang="zh-CN">"为什么账单是按使用量计费而不是固定许可证？"</p>
+<p>"You're paying for inference — every model provider request runs the model on the provider's hardware. Training already happened, but inference costs accrue per request, and a single <a href="#turn">turn</a> can expand into many requests when <a href="#tool">tools</a> are called."</p>
+<p class="zh" lang="zh-CN">"你在为推理付费——每次模型提供商请求都会在提供商的硬件上运行模型。训练已经完成，但推理成本按请求累积，而且当调用<a href="#tool">工具</a>时，单个<a href="#turn">轮次</a>可能扩展为多个请求。"</p></div></article>
+<article id="token" class="entry" data-term="Token"><h3 class="entry-title">Token / 词元</h3>
+<div class="entry-description"><p>The atomic unit a model reads and writes. Roughly word-sized but not exactly. Context window size, cost, and latency all count tokens.</p><p class="zh" lang="zh-CN">模型读写的基本单位。大致与单词相当但不完全等同。上下文窗口大小、成本和延迟都以词元计算。</p></div>
+<div class="entry-body"><p>The atomic unit a <a href="#model">model</a> reads and writes. Roughly word-sized but not exactly — common words are one token, rare or long ones split into several. <a href="#context-window">Context window</a> size, cost, and latency are all counted in tokens.</p>
+<p class="zh" lang="zh-CN"><a href="#model">模型</a>读写的基本单位。大致与单词相当但不完全等同——常见单词是一个词元，罕见或较长的单词会拆分成多个。<a href="#context-window">上下文窗口</a>大小、成本和延迟都以词元计算。</p>
+<p><em>Avoid:</em> "word" — token boundaries don't match word boundaries, and tokens-per-second / tokens-per-dollar are实际重要的单位。</p>
+<p class="zh" lang="zh-CN"><em>避免：</em> 使用"word（单词）"——词元边界与单词边界不匹配，而每秒词元/每美元词元才是实际重要的单位。</p>
+<p><em>Usage:</em></p>
+<p>"How big is this prompt going to be?"</p>
+<p class="zh" lang="zh-CN">"这个提示词会有多大？"</p>
+<p>"Run it through the tokenizer — the schema's compact but the JSON keys are weird, so they'll split into more tokens than you think."</p>
+<p class="zh" lang="zh-CN">"用分词器跑一下——schema很紧凑但JSON键名很奇怪，所以它们会拆分成比你想象的更多的词元。"</p></div></article>
+<article id="next-token-prediction" class="entry" data-term="Next-token prediction"><h3 class="entry-title">Next-token prediction / 下一个词元预测</h3>
+<div class="entry-description"><p>What the model actually does. Samples one next token from the context, appends it, and runs again. Its only mode of operation.</p><p class="zh" lang="zh-CN">模型实际做的事情。从上下文中采样下一个词元，追加它，然后再次运行。它唯一的操作模式。</p></div>
+<div class="entry-body"><p>What the <a href="#model">model</a> actually does. Given a <a href="#context">context</a>, it samples one next <a href="#token">token</a>, appends it, and runs again. Every output — a sentence, a <a href="#tool-call">tool call</a>, a thousand-line file — is built one token at a time. The model has no other mode of operation.</p>
+<p class="zh" lang="zh-CN"><a href="#model">模型</a>实际做的事情。给定一个<a href="#context">上下文</a>，它采样下一个<a href="#token">词元</a>，追加它，然后再次运行。每一个输出——一句话、一个<a href="#tool-call">工具调用</a>、一个千行文件——都是一个词元一个词元构建的。模型没有其他操作模式。</p>
+<p><em>Usage:</em></p>
+<p>"How does the <a href="#agent">agent</a> 'decide' to call a tool?"</p>
+<p class="zh" lang="zh-CN">"<a href="#agent">智能体</a>是如何'决定'调用工具的？"</p>
+<p>"It doesn't — it's next-token prediction all the way down. The tool call is just a structured string the <a href="#harness">harness</a> parses out of the output stream."</p>
+<p class="zh" lang="zh-CN">"它并没有决定——从头到尾都是下一个词元预测。工具调用只是<a href="#harness">harness</a>从输出流中解析出的结构化字符串。"</p></div></article>
+<article id="non-determinism" class="entry" data-term="Non-determinism"><h3 class="entry-title">Non-determinism / 非确定性</h3>
+<div class="entry-description"><p>The same input can produce different output. A property of how models generate text and how providers serve requests.</p><p class="zh" lang="zh-CN">相同的输入可能产生不同的输出。这是模型生成文本和提供商处理请求方式的属性。</p></div>
+<div class="entry-body"><p>The same input can produce different output. Run a <a href="#model">model</a> twice with identical <a href="#context">context</a> and you may get two different answers — sometimes a word, sometimes a completely different approach. Nothing in your code has to change for this to happen.</p>
+<p class="zh" lang="zh-CN">相同的输入可能产生不同的输出。用相同的<a href="#context">上下文</a>运行两次<a href="#model">模型</a>，你可能会得到两个不同的答案——有时是一个词不同，有时是完全不同的方法。你的代码不需要做任何改变就会发生这种情况。</p>
+<p>It's a property of how models generate text, and how <a href="#model-provider">model providers</a> serve <a href="#model-provider-request">requests</a>. There's no setting you can flip to make it go away.</p>
+<p class="zh" lang="zh-CN">这是模型生成文本的方式以及<a href="#model-provider">模型提供商</a>处理<a href="#model-provider-request">请求</a>方式的属性。没有开关可以消除它。</p>
+<p>Expect a spread of results from an <a href="#agent">agent</a> on the same task. Some days the model will feel sharp; some days it'll feel like it's lost the plot. Same task, different rolls of the dice.</p>
+<p class="zh" lang="zh-CN">对同一个任务，<a href="#agent">智能体</a>的结果会有一定分布范围。有些天模型感觉很敏锐；有些天感觉像迷失了方向。同一个任务，不同的骰子点数。</p>
+<p>Be careful not to over-narrativize this. Humans are pattern-matching machines, and a string of bad runs can feel like proof that "the model got worse this week." Usually it's just the distribution.</p>
+<p class="zh" lang="zh-CN">注意不要过度叙事化。人类是模式匹配机器，一连串糟糕的运行可能会让你觉得"这周模型变差了"。通常这只是分布问题。</p>
+<p>_Usage:_</p>
+<p>"Claude has been awful today. Did they ship a worse version?"</p>
+<p class="zh" lang="zh-CN">"Claude 今天表现很差。他们是不是发布了更差的版本？"</p>
+<p>"Probably not — model output is non-deterministic. You're going to have good days and bad days on the same task. Try again tomorrow before you go looking for a cause."</p>
+<p class="zh" lang="zh-CN">"可能不是——模型输出是非确定性的。同一个任务你会有好日子和坏日子。明天再试一次，别急着找原因。"</p></div></article>
+<article id="model-provider" class="entry" data-term="Model provider"><h3 class="entry-title">Model provider / 模型提供商</h3>
+<div class="entry-description"><p>Whatever serves a model for inference. Usually remote (Anthropic, OpenAI, Google), but can also be local (Ollama, llama.cpp).</p><p class="zh" lang="zh-CN">为模型提供推理服务的任何实体。通常是远程的（Anthropic、OpenAI、Google），也可以是本地的（Ollama、llama.cpp）。</p></div>
+<div class="entry-body"><p>Whatever serves a <a href="#model">model</a> for <a href="#inference">inference</a>. Usually a remote service (Anthropic, OpenAI, Google), but can also be local — Ollama, LM Studio, llama.cpp running on your own machine. The <a href="#harness">harness</a> doesn't run the model itself; it asks a provider to.</p>
+<p class="zh" lang="zh-CN">为<a href="#model">模型</a>提供<a href="#inference">推理</a>服务的任何实体。通常是远程服务（Anthropic、OpenAI、Google），也可以是本地的——在你自己的机器上运行 Ollama、LM Studio 或 llama.cpp。<a href="#harness">Harness</a>本身不运行模型；它请求提供商来运行。</p>
+<p><em>Usage:</em></p>
+<p>"Can we run this offline for the air-gapped client?"</p>
+<p class="zh" lang="zh-CN">"我们能为这个气隙隔离的客户端离线运行吗？"</p>
+<p>"Swap the model provider to a local one — Ollama or llama.cpp on their box. The harness doesn't care, it just hits a different endpoint."</p>
+<p class="zh" lang="zh-CN">"把模型提供商换成本地的——在他们机器上装 Ollama 或 llama.cpp。Harness 不在乎，它只是访问不同的端点。"</p></div></article>
+<article id="harness" class="entry" data-term="Harness"><h3 class="entry-title">Harness / Harness</h3>
+<div class="entry-description"><p>Everything around the model that turns it into an agent: tools, system prompt, context-window management, permissions, hooks.</p><p class="zh" lang="zh-CN">围绕模型将其转变为智能体的一切：工具、系统提示词、上下文窗口管理、权限、钩子。</p></div>
+<div class="entry-body"><p>Everything around the <a href="#model">model</a> that turns it into an <a href="#agent">agent</a>: <a href="#tool">tools</a>, <a href="#system-prompt">system prompt</a>, <a href="#context-window">context-window management</a>, permissions, hooks. <strong>Claude.ai</strong> and <strong>Claude Code</strong> run on the same model but behave differently because their harnesses differ.</p>
+<p class="zh" lang="zh-CN">围绕<a href="#model">模型</a>将其转变为<a href="#agent">智能体</a>的一切：<a href="#tool">工具</a>、<a href="#system-prompt">系统提示词</a>、<a href="#context-window">上下文窗口管理</a>、权限、钩子。<strong>Claude.ai</strong> 和 <strong>Claude Code</strong> 运行在相同的模型上，但行为不同，因为它们的 harness 不同。</p>
+<p><em>Usage:</em></p>
+<p>"Same model, why is Claude Code editing files and Claude.ai just answering questions?"</p>
+<p class="zh" lang="zh-CN">"同一个模型，为什么 Claude Code 在编辑文件而 Claude.ai 只是回答问题？"</p>
+<p>"Different harnesses — Claude Code has <a href="#filesystem">filesystem</a> tools, a different system prompt, and a permission layer. The model isn't the variable here."</p>
+<p class="zh" lang="zh-CN">"不同的 harness——Claude Code 有<a href="#filesystem">文件系统</a>工具、不同的系统提示词和一个权限层。这里的变量不是模型。"</p></div></article>
+<article id="model-provider-request" class="entry" data-term="Model provider request"><h3 class="entry-title">Model provider request / 模型提供商请求</h3>
+<div class="entry-description"><p>One round-trip from the harness to the model provider. The harness sends context; the provider returns one response.</p><p class="zh" lang="zh-CN">从 harness 到模型提供商的一次往返。Harness 发送上下文；提供商返回一个响应。</p></div>
+<div class="entry-body"><p>One round-trip from the <a href="#harness">harness</a> to the <a href="#model-provider">model provider</a>. The harness sends the current <a href="#context">context</a>; the provider returns one response (a <a href="#tool-call">tool call</a> or a final answer). A single user message can spawn many model provider requests if the <a href="#agent">agent</a> calls <a href="#tool">tools</a> — each <a href="#tool-result">tool result</a> triggers another request.</p>
+<p class="zh" lang="zh-CN">从<a href="#harness">harness</a>到<a href="#model-provider">模型提供商</a>的一次往返。Harness 发送当前<a href="#context">上下文</a>；提供商返回一个响应（一个<a href="#tool-call">工具调用</a>或最终答案）。如果<a href="#agent">智能体</a>调用<a href="#tool">工具</a>，单个用户消息可能产生多个模型提供商请求——每个<a href="#tool-result">工具结果</a>都会触发另一个请求。</p>
+<p><em>Usage:</em></p>
+<p>"One question burned forty thousand <a href="#token">tokens</a>?"</p>
+<p class="zh" lang="zh-CN">"一个问题就消耗了四万<a href="#token">词元</a>？"</p>
+<p>"Look at the tool calls — twelve grep, eight read, four edits. Each tool result spawns another model provider request, and the whole <a href="#session">session</a> prefix re-sends every time."</p>
+<p class="zh" lang="zh-CN">"看看工具调用——十二次 grep、八次读取、四次编辑。每个工具结果都会产生另一个模型提供商请求，而且整个<a href="#session">会话</a>前缀每次都会重新发送。"</p></div></article>
+<article id="input-tokens" class="entry" data-term="Input tokens"><h3 class="entry-title">Input tokens / 输入词元</h3>
+<div class="entry-description"><p>Tokens the harness sends on each model provider request. Billed at a lower rate than output tokens.</p><p class="zh" lang="zh-CN">Harness 在每次模型提供商请求时发送的词元。计费费率低于输出词元。</p></div>
+<div class="entry-body"><p><a href="#token">Tokens</a> the <a href="#harness">harness</a> sends on each <a href="#model-provider-request">model provider request</a>. Billed at a lower rate than <a href="#output-tokens">output tokens</a>.</p>
+<p class="zh" lang="zh-CN"><a href="#harness">Harness</a>在每次<a href="#model-provider-request">模型提供商请求</a>时发送的<a href="#token">词元</a>。计费费率低于<a href="#output-tokens">输出词元</a>。</p>
+<p><em>Usage:</em></p>
+<p>"Bill's high but the <a href="#agent">agent</a>'s barely writing anything."</p>
+<p class="zh" lang="zh-CN">"账单很高，但<a href="#agent">智能体</a>几乎没写什么内容。"</p>
+<p>"It's the input tokens — every <a href="#turn">turn</a> re-sends the whole <a href="#session">session</a>. Without the <a href="#prefix-cache">prefix cache</a> you re-pay for the history each request."</p>
+<p class="zh" lang="zh-CN">"是输入词元的问题——每个<a href="#turn">轮次</a>都会重新发送整个<a href="#session">会话</a>。没有<a href="#prefix-cache">前缀缓存</a>的话，每次请求你都要为历史记录重新付费。"</p></div></article>
+<article id="output-tokens" class="entry" data-term="Output tokens"><h3 class="entry-title">Output tokens / 输出词元</h3>
+<div class="entry-description"><p>Tokens the model generates back. Billed at a higher rate than input tokens, since they cost more compute to produce.</p><p class="zh" lang="zh-CN">模型生成的词元。计费费率高于输入词元，因为产生它们需要更多计算资源。</p></div>
+<div class="entry-body"><p><a href="#token">Tokens</a> the <a href="#model">model</a> generates back. Billed at a higher rate than <a href="#input-tokens">input tokens</a>, since they cost more compute to produce.</p>
+<p class="zh" lang="zh-CN"><a href="#model">模型</a>生成的<a href="#token">词元</a>。计费费率高于<a href="#input-tokens">输入词元</a>，因为产生它们需要更多计算资源。</p>
+<p><em>Usage:</em></p>
+<p>"The refactor <a href="#session">session</a> is burning through credit even though the inputs are small."</p>
+<p class="zh" lang="zh-CN">"重构<a href="#session">会话</a>在快速消耗额度，尽管输入很小。"</p>
+<p>"<a href="#agent">Agent</a>'s rewriting whole files instead of patching. Output tokens cost roughly five times the input rate — get it emitting edits and the bill drops."</p>
+<p class="zh" lang="zh-CN">"<a href="#agent">智能体</a>在重写整个文件而不是打补丁。输出词元的成本大约是输入费率的五倍——让它输出编辑建议，账单就会下降。"</p></div></article>
+<article id="prefix-cache" class="entry" data-term="Prefix cache"><h3 class="entry-title">Prefix cache / 前缀缓存</h3>
+<div class="entry-description"><p>The provider-side store that lets consecutive requests skip re-processing a shared prefix, billing those tokens at a lower rate.</p><p class="zh" lang="zh-CN">模型提供方端的存储机制，让连续请求跳过共享前缀的重复处理，以更低费率计费这些词元。</p></div>
+<div class="entry-body"><p>The <a href="#model-provider">provider</a>-side store that lets consecutive <a href="#model-provider-request">model provider requests</a> skip re-processing a shared prefix. When the start of a request matches the start of a recent one — same <a href="#system-prompt">system prompt</a>, same history up to some point — the provider reuses its prior work and bills those <a href="#token">tokens</a> as <a href="#cache-tokens">cache tokens</a> at a much lower rate.</p>
+<p class="zh" lang="zh-CN"><a href="#model-provider">模型提供方</a>端的存储机制，让连续的<a href="#model-provider-request">模型提供方请求</a>跳过共享前缀的重复处理。当请求的开头与最近某个请求匹配——相同的<a href="#system-prompt">系统提示词</a>、相同的历史记录到某一点——提供方会复用之前的计算结果，并将这些<a href="#token">词元</a>作为<a href="#cache-tokens">缓存词元</a>以低得多的费率计费。</p>
+<p>Anything that changes the prefix (reordering files, rewriting the system prompt mid-<a href="#session">session</a>, injecting a timestamp near the top) invalidates the cache from that point on, and the rest of the request bills at full <a href="#input-tokens">input token</a> rate.</p>
+<p class="zh" lang="zh-CN">任何改变前缀的操作（重新排序文件、在<a href="#session">会话</a>中途重写系统提示词、在顶部附近注入时间戳）都会使缓存从该点开始失效，请求的其余部分将按全额<a href="#input-tokens">输入词元</a>费率计费。</p>
+<p>_Usage:_</p>
+<p>"Why did the bill spike halfway through the session?"</p>
+<p class="zh" lang="zh-CN">"为什么会话进行到一半时费用突然飙升？"</p>
+<p>"<a href="#harness">Harness</a> started injecting the current time into the system prompt every <a href="#turn">turn</a>. Prefix cache breaks at the first changed token, so every request after that billed at full rate."</p>
+<p class="zh" lang="zh-CN">"<a href="#harness">Harness</a>开始在每一<a href="#turn">轮次</a>将当前时间注入系统提示词。前缀缓存在第一个变化的词元处就失效了，所以之后每个请求都按全额费率计费。"</p></div></article>
+<article id="cache-tokens" class="entry" data-term="Cache tokens"><h3 class="entry-title">Cache tokens / 缓存词元</h3>
+<div class="entry-description"><p>Input tokens the provider has cached from a previous request via its prefix cache, billed at a much lower rate.</p><p class="zh" lang="zh-CN">提供商通过其前缀缓存从先前请求中缓存下来的输入词元，计费费率低得多。</p></div>
+<div class="entry-body"><p><a href="#input-tokens">Input tokens</a> the <a href="#model-provider">provider</a> has cached from a previous <a href="#model-provider-request">model provider request</a> so it doesn't have to re-process them. When consecutive requests share a prefix, the provider reuses the work via its <a href="#prefix-cache">prefix cache</a> and bills the cached portion at a much lower rate. The lever that makes long <a href="#session">sessions</a> affordable — without it, every <a href="#turn">turn</a> re-pays for the whole history.</p>
+<p class="zh" lang="zh-CN"><a href="#model-provider">提供商</a>从先前的<a href="#model-provider-request">模型提供商请求</a>中缓存下来的<a href="#input-tokens">输入词元</a>，这样就不需要重新处理它们。当连续请求共享一个前缀时，提供商通过其<a href="#prefix-cache">前缀缓存</a>复用已完成的计算，并对缓存部分以低得多的费率计费。这是让长<a href="#session">会话</a>变得可负担的杠杆——没有它，每一<a href="#turn">轮次</a>都要为整个历史重新付费。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"Cost on long sessions is brutal — eight bucks for a refactor."</p>
+<p class="zh" lang="zh-CN">"长会话的成本太可怕了——一次重构要八美元。"</p>
+<p>"Check the cache tokens. If the <a href="#harness">harness</a> is reordering the <a href="#system-prompt">system prompt</a> or files between turns, the prefix breaks and you re-pay full input rate every request."</p>
+<p class="zh" lang="zh-CN">"检查一下缓存词元。如果<a href="#harness">harness</a>在轮次之间重新排序<a href="#system-prompt">系统提示词</a>或文件，前缀就会断裂，你每次请求都要按全额输入费率付费。"</p></div></article>
+<h2 class="section-heading">Section 2 — Sessions, Context Windows & Turns / 会话、上下文窗口与轮次</h2>
+<article id="stateless" class="entry" data-term="Stateless"><h3 class="entry-title">Stateless / 无状态</h3>
+<div class="entry-description"><p>Carries no information forward. The model is stateless across requests; an agent is stateless across sessions by default.</p><p class="zh" lang="zh-CN">不携带信息向前传递。模型在请求间是无状态的；智能体默认在会话间是无状态的。</p></div>
+<div class="entry-body"><p>Carries no information forward. The <a href="#model">model</a> is stateless across <a href="#model-provider-request">model provider requests</a> — each request resends the full <a href="#context-window">context window</a>, because the model has no way to see anything else. An <a href="#agent">agent</a> is stateless across <a href="#session">sessions</a> by default: a new session starts empty, with no trace of prior ones. Counterpart to <a href="#stateful">stateful</a>.</p>
+<p class="zh" lang="zh-CN">不携带信息向前传递。<a href="#model">模型</a>在<a href="#model-provider-request">模型提供方请求</a>间是无状态的——每个请求都会重新发送完整的<a href="#context-window">上下文窗口</a>，因为模型无法看到其他任何东西。<a href="#agent">智能体</a>默认在<a href="#session">会话</a>间是无状态的：新会话从空开始，没有任何先前会话的痕迹。<a href="#stateful">有状态</a>的反义词。</p>
+<p><em>Usage:</em></p>
+<p>"Why does it forget the convention every time I <a href="#clearing">clear</a>?"</p>
+<p class="zh" lang="zh-CN">"为什么每次我<a href="#clearing">清空</a>后它都会忘记约定？"</p>
+<p>"The model's stateless — the new session starts empty. If you want it carried, write it to <a href="#agentsmd">AGENTS.md</a> or a memory file the <a href="#harness">harness</a> loads at session start."</p>
+<p class="zh" lang="zh-CN">"模型是无状态的——新会话从空开始。如果你想让它被记住，就把它写入<a href="#agentsmd">AGENTS.md</a>或harness在会话开始时加载的记忆文件中。"</p></div></article>
+<article id="context" class="entry" data-term="Context"><h3 class="entry-title">Context / 上下文</h3>
+<div class="entry-description"><p>The relevant information the agent has access to right now — what the agent knows that's pertinent to the task.</p><p class="zh" lang="zh-CN">智能体当前能够访问的相关信息——智能体所知道的与任务相关的内容。</p></div>
+<div class="entry-body"><p>The relevant information the <a href="#agent">agent</a> has access to right now. The abstract noun — not the raw input the model sees (that's the <a href="#context-window">context window</a>), not the running history (that's the <a href="#session">session</a>), but <em>what the agent knows that's pertinent to the task</em>. "Loading something into context" means making it part of this set; "context engineering" is the discipline of curating it.</p>
+<p class="zh" lang="zh-CN"><a href="#agent">智能体</a>当前能够访问的相关信息。这是一个抽象名词——不是模型看到的原始输入（那是<a href="#context-window">上下文窗口</a>），也不是运行中的历史（那是<a href="#session">会话</a>），而是<em>智能体所知道的与任务相关的内容</em>。"把某物加载到context中"意味着让它成为这个集合的一部分；"context engineering"（上下文工程）是策划它的学问。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"It keeps inventing fields that aren't in the type."</p>
+<p class="zh" lang="zh-CN">"它一直在发明类型中不存在的字段。"</p>
+<p>"The type file isn't in context — it's reading the call sites and guessing. Read the definition in first."</p>
+<p class="zh" lang="zh-CN">"类型文件不在context里——它只是在读调用点然后猜测。先把定义读进来。"</p></div></article>
+<article id="context-window" class="entry" data-term="Context window"><h3 class="entry-title">Context window / 上下文窗口</h3>
+<div class="entry-description"><p>Everything the model sees on each model provider request. Finite, model-specific, the only surface through which the model perceives.</p><p class="zh" lang="zh-CN">模型在每次模型提供商请求时看到的一切。有限的、模型特定的，是模型感知外界的唯一界面。</p></div>
+<div class="entry-body"><p>Everything the <a href="#model">model</a> sees on each <a href="#model-provider-request">model provider request</a>. Finite, model-specific, and the <em>only</em> surface through which the model perceives anything.</p>
+<p class="zh" lang="zh-CN"><a href="#model">模型</a>在每次<a href="#model-provider-request">模型提供商请求</a>时看到的一切。有限的、模型特定的，是模型感知任何事物的<em>唯一</em>界面。</p>
+<p><em>Avoid:</em> "memory" — the context window is working state and doesn't persist across <a href="#session">sessions</a>. <a href="#memory-system">Memory</a> is a separate concept layered on top.</p>
+<p class="zh" lang="zh-CN">避免使用："memory"（记忆）——上下文窗口是工作状态，不会在<a href="#session">会话</a>之间持久化。<a href="#memory-system">记忆</a>是叠加在其上的独立概念。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"Can I just paste the whole monorepo into the prompt?"</p>
+<p class="zh" lang="zh-CN">"我可以把整个monorepo贴到提示词里吗？"</p>
+<p>"The context window's 200k <a href="#token">tokens</a> — that's maybe a fifth of the repo. Pick the files the task touches, leave the rest behind a <a href="#tool-call">tool call</a>."</p>
+<p class="zh" lang="zh-CN">"上下文窗口是20万<a href="#token">词元</a>——大概只有仓库的五分之一。挑选任务涉及的文件，其余的放在<a href="#tool-call">工具调用</a>后面。"</p></div></article>
+<article id="stateful" class="entry" data-term="Stateful"><h3 class="entry-title">Stateful / 有状态</h3>
+<div class="entry-description"><p>Carries information forward. Sessions are stateful across turns; agents can be made stateful across sessions via a memory system.</p><p class="zh" lang="zh-CN">携带信息向前传递。会话在轮次间是有状态的；智能体可以通过记忆系统实现跨会话的有状态。</p></div>
+<div class="entry-body"><p>Carries information forward. A <a href="#session">session</a> is stateful across <a href="#turn">turns</a> — <a href="#context">context</a> accumulates as the session runs, which is why long sessions drift into the <a href="#smart-zone">dumb zone</a>. An <a href="#agent">agent</a> can be made stateful across <strong>sessions</strong> by adding a <a href="#memory-system">memory system</a> that persists information into the <a href="#environment">environment</a> and reloads it at the start of future sessions. The <a href="#model">model</a> is never stateful; any apparent continuity is the <a href="#harness">harness</a> re-feeding context. Counterpart to <a href="#stateless">stateless</a>.</p>
+<p class="zh" lang="zh-CN">携带信息向前传递。<a href="#session">会话</a>在<a href="#turn">轮次</a>间是有状态的——<a href="#context">上下文</a>随着会话运行而累积，这就是为什么长会话会滑入<a href="#smart-zone">愚钝区</a>。<a href="#agent">智能体</a>可以通过添加<a href="#memory-system">记忆系统</a>实现跨<strong>会话</strong>的有状态——将信息持久化到<a href="#environment">环境</a>中，并在未来会话开始时重新加载。<a href="#model">模型</a>本身永远不是有状态的；任何看似连续的表现都是<a href="#harness">harness</a>重新投喂上下文的结果。<a href="#stateless">无状态</a>的反义词。</p>
+<p><em>Usage:</em></p>
+<p>"It remembered my preferences from yesterday — does that mean the model learned them?"</p>
+<p class="zh" lang="zh-CN">"它记住了我昨天的偏好——这意味着模型学会了它们吗？"</p>
+<p>"No, the agent's stateful because the harness wrote them to a memory file and reloaded them at session start. The model itself saw nothing of yesterday."</p>
+<p class="zh" lang="zh-CN">"不，智能体是有状态的，因为harness把它们写入了记忆文件并在会话开始时重新加载。模型本身对昨天一无所知。"</p></div></article>
+<article id="agent" class="entry" data-term="Agent"><h3 class="entry-title">Agent / 智能体</h3>
+<div class="entry-description"><p>A model harnessed with tools, a system prompt, and a context window, that takes turns with a user. The model in motion.</p><p class="zh" lang="zh-CN">一个配备了工具、系统提示词和上下文窗口的模型，与用户轮流交互。模型在运转中的形态。</p></div>
+<div class="entry-body"><p>A <a href="#model">model</a> <a href="#harness">harnessed</a> with <a href="#tool">tools</a>, a <a href="#system-prompt">system prompt</a>, and a <a href="#context-window">context window</a>, that takes <a href="#turn">turns</a> with a user. <em>Claude Code is an agent. Cursor is an agent. Claude.ai is an agent.</em> An agent is what you actually talk to — it's the model in motion, configured for a purpose.</p>
+<p class="zh" lang="zh-CN">一个被<a href="#harness">harness</a>装配了<a href="#tool">工具</a>、<a href="#system-prompt">系统提示词</a>和<a href="#context-window">上下文窗口</a>的<a href="#model">模型</a>，与用户进行<a href="#turn">轮次</a>交互。<em>Claude Code是一个智能体。Cursor是一个智能体。Claude.ai是一个智能体。</em>智能体是你实际对话的对象——它是模型在运转中的形态，为特定目的而配置。</p>
+<p><em>Avoid:</em> "the AI", "the bot" (too vague — they hide whether you mean the parameters or the harnessed thing).</p>
+<p class="zh" lang="zh-CN">避免使用："the AI"、"the bot"（太模糊——它们掩盖了你指的是参数本身还是被装配后的整体）。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"Which agent are you using for the migration?"</p>
+<p class="zh" lang="zh-CN">"迁移工作你在用哪个智能体？"</p>
+<p>"Claude Code locally, Cursor for the UI work — same model underneath, different harnesses."</p>
+<p class="zh" lang="zh-CN">"本地用Claude Code，UI工作用Cursor——底层是同一个模型，不同的harness。"</p></div></article>
+<article id="system-prompt" class="entry" data-term="System prompt"><h3 class="entry-title">System prompt / 系统提示词</h3>
+<div class="entry-description"><p>The instructions the harness prepends to every model provider request — the agent's standing brief. Usually stable across a session.</p><p class="zh" lang="zh-CN">harness在每次模型提供方请求前预置的指令——智能体的常驻简报。通常在一个会话中保持稳定。</p></div>
+<div class="entry-body"><p>The instructions the <a href="#harness">harness</a> prepends to every <a href="#model-provider-request">model provider request</a> — the <a href="#agent">agent</a>'s standing brief: who it is, how to behave, which <a href="#tool">tools</a> it can call, what conventions to follow. Usually stable across a <a href="#session">session</a>.</p>
+<p class="zh" lang="zh-CN"><a href="#harness">harness</a>在每次<a href="#model-provider-request">模型提供方请求</a>前预置的指令——<a href="#agent">智能体</a>的常驻简报：它是谁、如何表现、可以调用哪些<a href="#tool">工具</a>、遵循什么约定。通常在一个<a href="#session">会话</a>中保持稳定。</p>
+<p><em>Usage:</em></p>
+<p>"Two harnesses, same <a href="#model">model</a>, totally different behavior on the same prompt."</p>
+<p class="zh" lang="zh-CN">"两个harness，同一个<a href="#model">模型</a>，对同一个提示词表现完全不同。"</p>
+<p>"Different system prompts. One's tuned for terse code edits, the other for explaining — that's where the divergence lives, before your message even arrives."</p>
+<p class="zh" lang="zh-CN">"系统提示词不同。一个针对简洁的代码编辑调优，另一个针对解释说明——差异在你消息到达之前就已经存在了。"</p></div></article>
+<article id="session" class="entry" data-term="Session"><h3 class="entry-title">Session / 会话</h3>
+<div class="entry-description"><p>One bounded run of interaction with an agent. Starts empty, accumulates, ends when cleared, closed, or compacted into a fresh session.</p><p class="zh" lang="zh-CN">与智能体的一次有界交互运行。从空开始，逐步累积，在清空、关闭或压缩为全新会话时结束。</p></div>
+<div class="entry-body"><p>One bounded run of interaction with an <a href="#agent">agent</a>. Starts empty, accumulates messages, <a href="#tool-result">tool results</a>, and files read, and ends when <a href="#clearing">cleared</a>, closed, or <a href="#compaction">compacted</a> into a fresh session. The session is what <em>fills</em> the <a href="#context-window">context window</a>: if the context window is the box, the session is the stuff slowly filling it up. Work too large for a single context window must be split across sessions.</p>
+<p class="zh" lang="zh-CN">与<a href="#agent">智能体</a>的一次有界交互运行。从空开始，逐步累积消息、<a href="#tool-result">工具结果</a>和已读文件，在<a href="#clearing">清空</a>、关闭或<a href="#compaction">压缩</a>为全新会话时结束。会话就是<em>填充</em><a href="#context-window">上下文窗口</a>的东西：如果上下文窗口是盒子，会话就是慢慢填满它的东西。单个上下文窗口容纳不下的工作必须拆分到多个会话中。</p>
+<p><em>Usage:</em></p>
+<p>"How long can one session run before it falls apart?"</p>
+<p class="zh" lang="zh-CN">"一个会话能运行多久才会崩溃？"</p>
+<p>"Depends on the work — a focused refactor stays sharp longer than open-ended research. Once the session bloats, <a href="#handoff">hand off</a> or compact, don't push through."</p>
+<p class="zh" lang="zh-CN">"取决于工作内容——专注的重构比开放式的研究保持清醒的时间更长。一旦会话膨胀了，就<a href="#handoff">交接</a>或压缩，不要硬撑。"</p></div></article>
+<article id="turn" class="entry" data-term="Turn"><h3 class="entry-title">Turn / 轮次</h3>
+<div class="entry-description"><p>One user message plus everything the agent does in response, up until it yields back to the user. Contains one or more provider requests.</p><p class="zh" lang="zh-CN">一条用户消息加上智能体对此做出的所有响应，直到将控制权交还给用户为止。包含一次或多次提供方请求。</p></div>
+<div class="entry-body"><p>One user message plus everything the <a href="#agent">agent</a> does in response, up until it yields back to the user. Contains one or more <a href="#model-provider-request">model provider requests</a> — many, if the agent calls <a href="#tool">tools</a>. A clarifying question closes the turn; your reply opens the next one. The hierarchy is <a href="#session">session</a> <strong>&gt; Turn &gt; Model provider request</strong>.</p>
+<p class="zh" lang="zh-CN">一条用户消息加上<a href="#agent">智能体</a>对此做出的所有响应，直到将控制权交还给用户为止。包含一次或多次<a href="#model-provider-request">模型提供方请求</a>——如果智能体调用了<a href="#tool">工具</a>，可能有很多次。澄清问题会结束当前轮次；你的回复开启下一轮。层级关系为：<a href="#session">会话</a> <strong>&gt; 轮次 &gt; 模型提供方请求</strong>。</p>
+<p><em>Usage:</em></p>
+<p>"One turn took two minutes?"</p>
+<p class="zh" lang="zh-CN">"一个轮次花了两分钟？"</p>
+<p>"It made fourteen <a href="#tool-call">tool calls</a> inside that turn — each one is a separate model provider request. Latency stacks up before the agent finally yields back to you."</p>
+<p class="zh" lang="zh-CN">"它在这个轮次里做了十四次<a href="#tool-call">工具调用</a>——每一次都是独立的模型提供方请求。在智能体最终将控制权交还给你之前，延迟累积起来了。"</p></div></article>
+<h2 class="section-heading">Section 3 — Tools & Environment / 工具与环境</h2>
+<article id="environment" class="entry" data-term="Environment"><h3 class="entry-title">Environment / 环境</h3>
+<div class="entry-description"><p>The world the agent acts on — anything outside the harness that the agent perceives via tool results and changes via tool calls.</p><p class="zh" lang="zh-CN">智能体作用的世界——harness之外的任何事物，智能体通过工具结果感知它，通过工具调用改变它。</p></div>
+<div class="entry-body"><p>The world the <a href="#agent">agent</a> acts on — anything outside the <a href="#harness">harness</a> that the agent perceives through <a href="#tool-result">tool results</a> and changes through <a href="#tool-call">tool calls</a>. The harness <em>runs</em> the agent; the environment is what the agent <em>works in</em>. A file like <a href="#agentsmd"><code>AGENTS.md</code></a> lives in the environment; the harness is what loads it into the <a href="#context-window">context window</a>. A <a href="#filesystem">filesystem</a> is the most common kind of environment, but not the only one (a database, a remote API, a browser session can all be environments).</p>
+<p class="zh" lang="zh-CN"><a href="#agent">智能体</a>作用的世界——<a href="#harness">harness</a>之外的任何事物，智能体通过<a href="#tool-result">工具结果</a>感知它，通过<a href="#tool-call">工具调用</a>改变它。harness<em>运行</em>智能体；environment是智能体<em>工作</em>的地方。像<a href="#agentsmd"><code>AGENTS.md</code></a>这样的文件存在于environment中；harness负责将其加载到<a href="#context-window">上下文窗口</a>中。<a href="#filesystem">文件系统</a>是最常见的environment类型，但不是唯一的（数据库、远程API、浏览器会话都可以是environment）。</p>
+<p><em>Avoid:</em> using "environment" for the runtime or the harness itself — the harness is the wrapper, the environment is the workspace.</p>
+<p class="zh" lang="zh-CN">避免使用：将"environment"用于运行时或harness本身——harness是包装器，environment是工作空间。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"The agent can't see the staging DB schema."</p>
+<p class="zh" lang="zh-CN">"智能体看不到staging数据库的schema。"</p>
+<p>"Wire it into the environment — give it a <code>psql</code> <a href="#tool">tool</a> scoped to read-only on staging. The harness is fine, it just has nothing to act on."</p>
+<p class="zh" lang="zh-CN">"把它接入environment——给它一个<code>psql</code><a href="#tool">工具</a>，范围限定为staging的只读访问。harness没问题，它只是没有可操作的对象。"</p></div></article>
+<article id="filesystem" class="entry" data-term="Filesystem"><h3 class="entry-title">Filesystem / 文件系统</h3>
+<div class="entry-description"><p>A tree of files and directories the agent reads from, writes to, and executes within — the default environment for a coding agent.</p><p class="zh" lang="zh-CN">智能体读取、写入和执行操作的文件与目录树——编程智能体的默认环境。</p></div>
+<div class="entry-body"><p>A tree of files and directories the <a href="#agent">agent</a> reads from, writes to, and executes within — the default kind of <a href="#environment">environment</a> for a coding agent. <a href="#agentsmd">AGENTS.md</a>, <a href="#skill">skills</a>, source code, build scripts, and <a href="#tool">tool</a> configs all live in a filesystem. When a <a href="#harness">harness</a> "starts in your project," it's pointing the agent at a filesystem.</p>
+<p class="zh" lang="zh-CN"><a href="#agent">智能体</a>从中读取、写入和执行操作的文件与目录树——编程智能体的默认<a href="#environment">环境</a>类型。<a href="#agentsmd">AGENTS.md</a>、<a href="#skill">技能</a>、源代码、构建脚本和<a href="#tool">工具</a>配置都存在于文件系统中。当<a href="#harness">harness</a>"在你的项目中启动"时，它实际上是将智能体指向一个文件系统。</p>
+<p><em>Usage:</em></p>
+<p>"Why isn't it picking up my AGENTS.md?"</p>
+<p class="zh" lang="zh-CN">"为什么它没有识别到我的 AGENTS.md？"</p>
+<p>"It's running against a different filesystem — the <a href="#sandbox">sandbox</a> mounted the parent dir, not the project root. Repoint the harness."</p>
+<p class="zh" lang="zh-CN">"它运行在一个不同的文件系统上——<a href="#sandbox">沙盒</a>挂载的是父目录，而不是项目根目录。重新指向 harness。"</p></div></article>
+<article id="tool" class="entry" data-term="Tool"><h3 class="entry-title">Tool / 工具</h3>
+<div class="entry-description"><p>A function the harness exposes for the agent to call — Read, Write, Bash, Search. How an agent perceives and acts on the environment.</p><p class="zh" lang="zh-CN">harness向智能体暴露的函数——Read、Write、Bash、Search。智能体感知和操作环境的方式。</p></div>
+<div class="entry-body"><p>A function the <a href="#harness">harness</a> exposes for the <a href="#agent">agent</a> to call — Read, Write, Bash, Search. Tools are how an agent perceives and acts on the <a href="#environment">environment</a>: it can't see the environment except through <a href="#tool-result">tool results</a>, and can't change it except through <a href="#tool-call">tool calls</a>. Each tool call costs an extra <a href="#model-provider-request">model provider request</a>, since the result has to go back to the model before it can decide what to do next.</p>
+<p class="zh" lang="zh-CN"><a href="#harness">harness</a>向<a href="#agent">智能体</a>暴露的函数——Read、Write、Bash、Search。工具是智能体感知和操作<a href="#environment">环境</a>的方式：除了通过<a href="#tool-result">工具结果</a>，它无法看到环境；除了通过<a href="#tool-call">工具调用</a>，它无法改变环境。每次工具调用都要额外消耗一次<a href="#model-provider-request">模型提供方请求</a>，因为结果必须返回给模型，它才能决定下一步做什么。</p>
+<p><em>Usage:</em></p>
+<p>"Can the agent query staging directly?"</p>
+<p class="zh" lang="zh-CN">"智能体能直接查询staging环境吗？"</p>
+<p>"Add a <code>psql</code> tool to the harness, scoped read-only on staging. Without a tool for it, the agent's blind to anything outside the <a href="#filesystem">filesystem</a>."</p>
+<p class="zh" lang="zh-CN">"给harness添加一个<code>psql</code>工具，限定为staging环境的只读权限。没有对应的工具，智能体对<a href="#filesystem">文件系统</a>之外的任何东西都一无所知。"</p></div></article>
+<article id="tool-call" class="entry" data-term="Tool call"><h3 class="entry-title">Tool call / 工具调用</h3>
+<div class="entry-description"><p>The model's output naming a tool and its arguments — just structured text. The harness has to read it and execute.</p><p class="zh" lang="zh-CN">模型输出的工具名称及其参数——只是结构化文本。harness需要读取并执行它。</p></div>
+<div class="entry-body"><p>The <a href="#model">model</a>'s output naming a <a href="#tool">tool</a> and its arguments — just structured text. It doesn't do anything on its own; the <a href="#harness">harness</a> has to read it and execute. Produced by the model in one <a href="#model-provider-request">model provider request</a>.</p>
+<p class="zh" lang="zh-CN"><a href="#model">模型</a>输出的<a href="#tool">工具</a>名称及其参数——只是结构化文本。它本身不会做任何事；<a href="#harness">harness</a>需要读取并执行它。由模型在一次<a href="#model-provider-request">模型提供方请求</a>中产生。</p>
+<p><em>Usage:</em></p>
+<p>"It said it ran the tests but the file timestamps haven't changed."</p>
+<p class="zh" lang="zh-CN">"它说它运行了测试，但文件时间戳没有变化。"</p>
+<p>"Look at the transcript — did it actually emit a tool call, or just describe running them? The model produces the call, but if the harness didn't execute it, nothing happened."</p>
+<p class="zh" lang="zh-CN">"看对话记录——它真的发出了工具调用，还是只是描述了运行测试？模型产生调用，但如果harness没有执行它，就什么都不会发生。"</p></div></article>
+<article id="tool-result" class="entry" data-term="Tool result"><h3 class="entry-title">Tool result / 工具结果</h3>
+<div class="entry-description"><p>What the harness sends back after executing a tool call — file contents, output, or error. The agent's only window onto the environment.</p><p class="zh" lang="zh-CN">harness执行工具调用后返回的内容——文件内容、输出或错误。智能体观察环境的唯一窗口。</p></div>
+<div class="entry-body"><p>What the <a href="#harness">harness</a> sends back after executing a <a href="#tool-call">tool call</a> — the file contents, the command output, the error. The <a href="#agent">agent</a>'s only window onto the <a href="#environment">environment</a>. Travels back to the <a href="#model">model</a> in the <em>next</em> <a href="#model-provider-request">model provider request</a>, where the model decides what to do with it. Tool call and tool result are two ends of the same exchange, both inside one <a href="#turn">turn</a>.</p>
+<p class="zh" lang="zh-CN"><a href="#harness">harness</a>执行<a href="#tool-call">工具调用</a>后返回的内容——文件内容、命令输出或错误。<a href="#agent">智能体</a>观察<a href="#environment">环境</a>的唯一窗口。在<em>下一次</em><a href="#model-provider-request">模型提供方请求</a>中返回给<a href="#model">模型</a>，模型据此决定如何处理。工具调用和工具结果是同一交换的两端，都在一个<a href="#turn">轮次</a>之内。</p>
+<p><em>Usage:</em></p>
+<p>"It's reasoning about the file like it's empty."</p>
+<p class="zh" lang="zh-CN">"它在推理文件内容，好像文件是空的。"</p>
+<p>"The tool result came back as a permission denial, not the contents. The model only saw the error string — it has no other window onto the file."</p>
+<p class="zh" lang="zh-CN">"工具结果返回的是权限拒绝，而不是文件内容。模型只看到了错误字符串——它没有其他窗口来查看文件。"</p></div></article>
+<article id="mcp" class="entry" data-term="MCP"><h3 class="entry-title">MCP / MCP（模型上下文协议）</h3>
+<div class="entry-description"><p>A protocol for plugging external tool servers into a harness — how an agent gets tools beyond what the harness ships with.</p><p class="zh" lang="zh-CN">一种将外部工具服务器接入 harness 的协议——智能体如何获取 harness 自带之外的工具。</p></div>
+<div class="entry-body"><p><strong>Model Context Protocol.</strong> A protocol for plugging external tool servers into a <a href="#harness">harness</a> — how an <a href="#agent">agent</a> gets <a href="#tool">tools</a> beyond what the harness ships with. The agent never "calls MCP"; it calls a tool, and the harness happens to have gotten that tool from an MCP server. Also exposes resources (read-only data) and prompts (reusable templates), but tool provision is the primary use.</p>
+<p class="zh" lang="zh-CN"><strong>模型上下文协议（Model Context Protocol，MCP）。</strong> 一种将外部工具服务器接入<a href="#harness">harness</a>的协议——<a href="#agent">智能体</a>如何获取 harness 自带的<a href="#tool">工具</a>之外的能力。智能体从不"调用 MCP"；它调用的是工具，而 harness 恰好是从 MCP 服务器获取了该工具。还暴露资源（只读数据）和提示词（可复用模板），但工具提供是主要用途。</p>
+<p>_Usage:_</p>
+<p>"The agent needs to read tickets from Linear."</p>
+<p class="zh" lang="zh-CN">"智能体需要从 Linear 读取工单。"</p>
+<p>"Configure the harness to use the Linear MCP server — it exposes the Linear API as tools the agent can call. Saves you writing custom tool wrappers."</p>
+<p class="zh" lang="zh-CN">"配置 harness 使用 Linear 的 MCP 服务器——它将 Linear API 暴露为智能体可调用的工具。省得你写自定义的工具包装器。"</p></div></article>
+<article id="permission-request" class="entry" data-term="Permission request"><h3 class="entry-title">Permission request / 权限请求</h3>
+<div class="entry-description"><p>What the harness shows the user before executing a tool call that isn't pre-approved. The mechanism for putting a human in the loop.</p><p class="zh" lang="zh-CN">在执行未经预先批准的工具调用前，harness向用户展示的确认提示。将人类纳入决策循环的机制。</p></div>
+<div class="entry-body"><p>What the <a href="#harness">harness</a> shows the user before executing a <a href="#tool-call">tool call</a> that isn't pre-approved. The <a href="#model">model</a> produces a tool call; instead of running it immediately, the harness pauses and asks. Approve and it runs; deny and the harness reports the denial back to the model as a <a href="#tool-result">tool result</a>. The mechanism by which a harness puts a human in the <a href="#human-in-the-loop">loop</a> for risky or sensitive actions.</p>
+<p class="zh" lang="zh-CN"><a href="#harness">harness</a>在执行未经预先批准的<a href="#tool-call">工具调用</a>前向用户展示的确认提示。<a href="#model">模型</a>生成了一个工具调用；harness不会立即执行，而是暂停并询问用户。批准则执行；拒绝则harness将拒绝信息作为<a href="#tool-result">工具结果</a>返回给模型。这是harness将人类纳入<a href="#human-in-the-loop">循环</a>以处理风险或敏感操作的机制。</p>
+<p><em>Usage:</em></p>
+<p>"It's been blocked on a permission request for ten minutes — I was in a meeting."</p>
+<p class="zh" lang="zh-CN">"它被一个权限请求卡了十分钟——我当时在开会。"</p>
+<p>"That's the cost of human-in-the-loop. Pre-approve the safe <a href="#tool">tools</a> so the request only fires on the actually-risky calls."</p>
+<p class="zh" lang="zh-CN">"这就是人类在循环中的代价。预先批准安全的<a href="#tool">工具</a>，这样权限请求只会在真正有风险的调用时触发。"</p></div></article>
+<article id="permission-mode" class="entry" data-term="Permission mode"><h3 class="entry-title">Permission mode / 权限模式</h3>
+<div class="entry-description"><p>The permission-gating slice of an agent mode — which tool calls trigger a permission request and which run automatically.</p><p class="zh" lang="zh-CN">智能体模式的权限门控部分——哪些工具调用会触发权限请求，哪些自动运行。</p></div>
+<div class="entry-body"><p>The permission-gating slice of an <a href="#agent-mode">agent mode</a> — which <a href="#tool-call">tool calls</a> trigger a <a href="#permission-request">permission request</a> and which run automatically. The original purpose of mode systems before <a href="#harness">harnesses</a> started bundling behavioral instructions on top.</p>
+<p class="zh" lang="zh-CN"><a href="#agent-mode">智能体模式</a>的权限门控部分——哪些<a href="#tool-call">工具调用</a>会触发<a href="#permission-request">权限请求</a>，哪些自动运行。在<a href="#harness">harnesses</a>开始在之上捆绑行为指令之前，模式系统的原始目的。</p>
+<p><em>Usage:</em></p>
+<p>"It paused on every grep — totally killed the <a href="#afk">AFK</a> run."</p>
+<p class="zh" lang="zh-CN">"它在每次 grep 时都暂停——完全毁掉了<a href="#afk">AFK</a>（离开键盘）运行。"</p>
+<p>"Loosen the permission mode for read-only <a href="#tool">tools</a>, keep prompting on writes and shell. Most permission requests on a research <a href="#session">session</a> are noise."</p>
+<p class="zh" lang="zh-CN">"对只读<a href="#tool">工具</a>放宽权限模式，对写入和 shell 操作保持提示。研究<a href="#session">会话</a>中的大多数权限请求都是噪音。"</p></div></article>
+<article id="agent-mode" class="entry" data-term="Agent mode"><h3 class="entry-title">Agent mode / 智能体模式</h3>
+<div class="entry-description"><p>A preset bundling a permission mode with behavioral instructions injected into the system prompt. Can flip mid-session.</p><p class="zh" lang="zh-CN">一种预设配置，将权限模式与注入系统提示词的行为指令打包在一起。可以在会话中途切换。</p></div>
+<div class="entry-body"><p>A preset that shapes how the <a href="#agent">agent</a> operates at runtime — bundles a <a href="#permission-mode">permission mode</a> with behavioral instructions injected into the <a href="#system-prompt">system prompt</a>. Examples: a default that prompts on risky calls, a <strong>plan mode</strong> that blocks edits and steers the agent toward research, an <strong>accept-edits</strong> mode that auto-approves edits, a <strong>bypass permissions</strong> mode (colloquially <strong>YOLO mode</strong>) that auto-approves everything. Can flip <a href="#session">mid-session</a>.</p>
+<p class="zh" lang="zh-CN">一种塑造<a href="#agent">智能体</a>在运行时如何运作的预设配置——将<a href="#permission-mode">权限模式</a>与注入到<a href="#system-prompt">系统提示词</a>中的行为指令打包在一起。例如：默认模式会在风险操作时提示确认；<strong>plan mode</strong>（计划模式）会阻止编辑并引导智能体进行研究；<strong>accept-edits</strong>（接受编辑）模式会自动批准编辑；<strong>bypass permissions</strong>（绕过权限）模式（俗称<strong>YOLO mode</strong>）会自动批准所有操作。可以在<a href="#session">会话中途</a>切换。</p>
+<p><em>Vendor terms:</em> Claude Code calls these "permission modes," Codex calls them "approval modes" — both predate behavioral bundling.</p>
+<p class="zh" lang="zh-CN">厂商术语：Claude Code称之为"permission modes"（权限模式），Codex称之为"approval modes"（审批模式）——两者都早于行为打包的概念出现。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"It keeps editing files when I just want a plan."</p>
+<p class="zh" lang="zh-CN">"我只是想要一个计划，它却一直在编辑文件。"</p>
+<p>"Switch to plan mode — it'll block writes and stay in research."</p>
+<p class="zh" lang="zh-CN">"切换到plan mode——它会阻止写入，保持在研究状态。"</p>
+<p>"What about for the <a href="#afk">AFK</a> run later?"</p>
+<p class="zh" lang="zh-CN">"那之后的<a href="#afk">AFK</a>运行呢？"</p>
+<p>"Bypass mode, but only inside the <a href="#sandbox">sandbox</a>."</p>
+<p class="zh" lang="zh-CN">"Bypass mode，但只在<a href="#sandbox">沙盒</a>里。"</p></div></article>
+<article id="sandbox" class="entry" data-term="Sandbox"><h3 class="entry-title">Sandbox / 沙盒</h3>
+<div class="entry-description"><p>An isolated environment the agent runs inside — container, VM, or restricted shell. Limits the blast radius of agent actions.</p><p class="zh" lang="zh-CN">智能体运行的隔离环境——容器、虚拟机或受限shell。限制智能体操作的影响范围。</p></div>
+<div class="entry-body"><p>An isolated <a href="#environment">environment</a> the <a href="#agent">agent</a> runs inside — a container, VM, ephemeral <a href="#filesystem">filesystem</a>, or restricted-permission shell. Limits the blast radius of agent actions: even if the agent runs destructive commands or fetches something malicious, the damage is contained. The safety substrate that makes <a href="#afk">AFK</a> practical.</p>
+<p class="zh" lang="zh-CN"><a href="#agent">智能体</a>运行的隔离<a href="#environment">环境</a>——容器、虚拟机、临时<a href="#filesystem">文件系统</a>或受限权限的shell。限制智能体操作的影响范围：即使智能体执行了破坏性命令或获取了恶意内容，损害也会被控制在隔离范围内。这是让<a href="#afk">AFK</a>（离开键盘）模式得以实现的安全基础。</p>
+<p><em>Usage:</em></p>
+<p>"I want to let it run <a href="#agent-mode">bypass-permissions</a> overnight but I'm not ready for that."</p>
+<p class="zh" lang="zh-CN">"我想让它通宵运行<a href="#agent-mode">绕过权限</a>模式，但我还没准备好。"</p>
+<p>"Put it in a sandbox — fresh container, no credentials mounted, no network out. Worst case it nukes its own filesystem and you discard the container."</p>
+<p class="zh" lang="zh-CN">"把它放进沙盒——全新容器，不挂载任何凭证，禁止外网访问。最坏的情况也只是它摧毁了自己的文件系统，你直接丢弃这个容器就行。"</p></div></article>
+<h2 class="section-heading">Section 4 — Failure Modes / 失效模式</h2>
+<article id="sycophancy" class="entry" data-term="Sycophancy"><h3 class="entry-title">Sycophancy / 谄媚</h3>
+<div class="entry-description"><p>Confidently agreeable model output. Caused by training that shaped the model to favor answers humans liked — including agreement.</p><p class="zh" lang="zh-CN">自信且迎合的模型输出。由训练导致——模型被塑造为偏好人类喜欢的答案，包括赞同。</p></div>
+<div class="entry-body"><p>Confidently agreeable <a href="#model">model</a> output. Caused by <a href="#training">training</a>: the model was shaped to favor answers humans liked, and humans tend to like agreement more than they like being told they're wrong. So the model learned that agreeing is rewarded — even when the agreement is incorrect.</p>
+<p class="zh" lang="zh-CN">自信且迎合的<a href="#model">模型</a>输出。由<a href="#training">训练</a>导致：模型被塑造为偏好人类喜欢的答案，而人类往往更喜欢被赞同，而不是被告知自己错了。所以模型学会了赞同会得到奖励——即使这种赞同是错误的。</p>
+<p>_Surfaces as:_</p>
+<p class="zh" lang="zh-CN">_表现形式：_</p>
+<ul>
+<li>_Caving under pushback_ — reverses a correct answer when you say "are you sure?".</li>
+</ul>
+<p class="zh" lang="zh-CN">- _在反驳下屈服_——当你说"你确定吗？"时，它会推翻正确答案。</p>
+<ul>
+<li>_Praising bad input_ — agrees your broken plan is brilliant before analysing it.</li>
+</ul>
+<p class="zh" lang="zh-CN">- _赞美糟糕的输入_——在分析之前就赞同你那有缺陷的计划很出色。</p>
+<ul>
+<li>_Biased framing_ — review skews positive when you signal you wrote it; negative when you signal someone else did. Same artifact, different verdict.</li>
+</ul>
+<p class="zh" lang="zh-CN">- _有偏见的框架_——当你暗示是你写的时，评审偏向正面；当你暗示是别人写的时，偏向负面。同一个产物，不同的结论。</p>
+<ul>
+<li>_Mimicry_ — repeats your mistakes back to you as confirmation.</li>
+</ul>
+<p class="zh" lang="zh-CN">- _模仿_——把你的错误重复回来作为确认。</p>
+<p>_Diagnostic test:_ would the model have said this without your steer? If the only thing that changed was your tone or framing, it's sycophancy, not a real shift in analysis.</p>
+<p class="zh" lang="zh-CN">_诊断测试：_ 如果没有你的引导，模型还会这么说吗？如果唯一改变的是你的语气或框架，那就是谄媚，而非真正的分析转变。</p>
+<p>_Fix:_ hide your preferences. Phrase prompts neutrally — "review this code" not "is this code good?".</p>
+<p class="zh" lang="zh-CN">_解决方法：_ 隐藏你的偏好。用中性的措辞写提示词——"审查这段代码"而不是"这段代码好吗？"。</p>
+<p>_Avoid:_ using "sycophancy" for any wrong answer that happens to please you. Without the diagnostic test, the term has no more value than "wrong."</p>
+<p class="zh" lang="zh-CN">_避免：_ 把任何恰好让你高兴的错答案都称为"谄媚"。没有诊断测试，这个词的价值并不比"错了"更高。</p>
+<p>_Usage:_</p>
+<p>"It said my refactor plan looked great, then I asked 'are you sure?' and it walked the whole thing back."</p>
+<p class="zh" lang="zh-CN">"它说我的重构计划看起来很好，然后我问'你确定吗？'，它就全盘推翻了。"</p>
+<p>"Classic sycophancy — it agreed first because you sounded confident, then caved because you sounded doubtful. The plan's quality didn't change, your tone did. <a href="#clearing">Clear</a> and re-ask without signalling either way."</p>
+<p class="zh" lang="zh-CN">"典型的谄媚——它先赞同是因为你听起来很自信，然后屈服是因为你听起来很怀疑。计划的质量没变，变的是你的语气。<a href="#clearing">清空</a>会话，然后不带任何倾向性地重新提问。"</p></div></article>
+<article id="hallucination" class="entry" data-term="Hallucination"><h3 class="entry-title">Hallucination / 幻觉</h3>
+<div class="entry-description"><p>Confidently-wrong model output. Two flavors: factuality (invented facts) and faithfulness (drift from loaded context).</p><p class="zh" lang="zh-CN">confidently-wrong 模型输出。两种类型：事实性幻觉（编造事实）和忠实性幻觉（偏离已加载的上下文）。</p></div>
+<div class="entry-body"><p>Confidently-wrong <a href="#model">model</a> output. Two flavors with different causes and fixes:</p>
+<p class="zh" lang="zh-CN"><a href="#model">模型</a> confidently-wrong 的输出。两种不同类型，原因和解决方法各不相同：</p>
+<ul>
+<li><em>Factuality hallucination</em> — invented or wrong facts about the world (a function that doesn't exist, a wrong API signature, a fake citation). Caused by <a href="#parametric-knowledge">parametric knowledge</a> gaps, often past the <a href="#knowledge-cutoff">knowledge cutoff</a>. Fix: load the right <a href="#contextual-knowledge">contextual knowledge</a>.</li>
+<li><em>Faithfulness hallucination</em> — output drifts from the <strong>contextual knowledge</strong> that's loaded, the user's instructions, or the model's own prior reasoning. Symptom of <a href="#attention-degradation">attention degradation</a>; worsens in the <a href="#smart-zone">dumb zone</a>. Fix: <a href="#clearing">clear</a> or <a href="#compaction">compact</a>.</li>
+</ul>
+<p class="zh" lang="zh-CN"></p>
+<ul>
+<li><em>事实性幻觉（Factuality hallucination）</em>——关于世界的发明或错误事实（一个不存在的函数、错误的 API 签名、虚假的引用）。由<a href="#parametric-knowledge">参数化知识</a>的空白导致，通常发生在<a href="#knowledge-cutoff">知识截止日期</a>之后。解决方法：加载正确的<a href="#contextual-knowledge">上下文知识</a>。</li>
+<li><em>忠实性幻觉（Faithfulness hallucination）</em>——输出偏离已加载的<strong>上下文知识</strong>、用户指令或模型自身先前的推理。<a href="#attention-degradation">注意力退化</a>的症状；在<a href="#smart-zone">愚钝区</a>中恶化。解决方法：<a href="#clearing">清空</a>或<a href="#compaction">压缩</a>。</li>
+</ul>
+<p><em>Avoid:</em> "hallucination" as a bare synonym for "wrong" — without naming the flavor, the term has no diagnostic value.</p>
+<p class="zh" lang="zh-CN"><em>避免：</em> 将"幻觉"单独用作"错误"的同义词——如果不指明具体类型，这个词就没有诊断价值。</p>
+<p><em>Usage:</em></p>
+<p>"It hallucinated a <code>parseAsync</code> method on the schema."</p>
+<p class="zh" lang="zh-CN">"它幻觉出了一个 schema 上的 <code>parseAsync</code> 方法。"</p>
+<p>"Factuality or faithfulness?"</p>
+<p class="zh" lang="zh-CN">"是事实性还是忠实性？"</p>
+<p>"The method exists in the docs I pasted — it just stopped reading them after <a href="#turn">turn</a> forty."</p>
+<p class="zh" lang="zh-CN">"这个方法确实存在于我粘贴的文档中——只是在第<a href="#turn">四十轮次</a>之后它就停止阅读了。"</p>
+<p>"Faithfulness then. Compact and reload, don't bother adding more docs."</p>
+<p class="zh" lang="zh-CN">"那就是忠实性幻觉。压缩并重新加载，不用费心加更多文档了。"</p></div></article>
+<article id="parametric-knowledge" class="entry" data-term="Parametric knowledge"><h3 class="entry-title">Parametric knowledge / 参数化知识</h3>
+<div class="entry-description"><p>What the model knows from training, stored in its parameters. Frozen at training time. Counterpart to contextual knowledge.</p><p class="zh" lang="zh-CN">模型从训练中获得的知识，存储在其参数中。在训练时冻结。与上下文知识相对。</p></div>
+<div class="entry-body"><p>What the <a href="#model">model</a> "knows" from <a href="#training">training</a>, stored in its <a href="#parameters">parameters</a>. Frozen at training time — the model can't see its own parameters or update them. Detail is lost in the squeeze: billions of facts cram into a fixed number of parameters, and the rare ones blur. Source of fluency on common topics, and of fabrication on uncommon ones. Counterpart to <a href="#contextual-knowledge">contextual knowledge</a>.</p>
+<p class="zh" lang="zh-CN"><a href="#model">模型</a>从<a href="#training">训练</a>中"知道"的东西，存储在其<a href="#parameters">参数</a>中。在训练时冻结——模型无法看到自己的参数或更新它们。细节在压缩中丢失：数十亿个事实挤进固定数量的参数中，稀有的事实变得模糊。对常见话题的流畅性来源于此，对不常见话题的编造也来源于此。与<a href="#contextual-knowledge">上下文知识</a>相对。</p>
+<p><em>Usage:</em></p>
+<p>"It writes flawless React but invents methods on our internal SDK."</p>
+<p class="zh" lang="zh-CN">"它写 React 毫无瑕疵，但会在我们的内部 SDK 上编造方法。"</p>
+<p>"React is dense in the parametric knowledge — millions of training examples. Your SDK isn't, so the model fills in plausible-looking shapes. Load the SDK docs into <a href="#context">context</a>."</p>
+<p class="zh" lang="zh-CN">"React 在参数化知识中很密集——有数百万个训练示例。你的 SDK 不是，所以模型会填充看起来合理的内容。把 SDK 文档加载到<a href="#context">上下文</a>中。"</p></div></article>
+<article id="knowledge-cutoff" class="entry" data-term="Knowledge cutoff"><h3 class="entry-title">Knowledge cutoff / 知识截止</h3>
+<div class="entry-description"><p>The date past which a model has no parametric knowledge. Post-cutoff libraries and APIs are fabrication traps unless docs are loaded.</p><p class="zh" lang="zh-CN">模型在此日期之后没有参数化知识。截止日期之后的库和 API 除非加载文档，否则都是编造陷阱。</p></div>
+<div class="entry-body"><p>The date past which a <a href="#model">model</a> has no <a href="#parametric-knowledge">parametric knowledge</a>. Libraries, APIs, and events from after the cutoff are fabrication traps unless their docs are loaded as <a href="#contextual-knowledge">contextual knowledge</a>. Each model release ships with its own cutoff.</p>
+<p class="zh" lang="zh-CN"><a href="#model">模型</a>在此日期之后没有<a href="#parametric-knowledge">参数化知识</a>。截止日期之后的库、API 和事件，除非将其文档加载为<a href="#contextual-knowledge">上下文知识</a>，否则都是编造陷阱。每个模型版本都有自己的截止日期。</p>
+<p><em>Usage:</em></p>
+<p>"It keeps writing the v3 SDK syntax — we're on v5."</p>
+<p class="zh" lang="zh-CN">"它一直在写 v3 的 SDK 语法——我们已经在用 v5 了。"</p>
+<p>"v5 shipped after the knowledge cutoff. Load the v5 changelog as contextual knowledge, otherwise it'll keep fabricating from the older parametric version."</p>
+<p class="zh" lang="zh-CN">"v5 是在知识截止日期之后发布的。把 v5 的更新日志加载为上下文知识，否则它会继续从旧的参数化版本中编造内容。"</p></div></article>
+<article id="contextual-knowledge" class="entry" data-term="Contextual knowledge"><h3 class="entry-title">Contextual knowledge / 上下文知识</h3>
+<div class="entry-description"><p>Facts the agent can read directly from the context right now. Counterpart to parametric knowledge.</p><p class="zh" lang="zh-CN">智能体当前可以直接从上下文中读取到的事实。与参数化知识相对。</p></div>
+<div class="entry-body"><p>Facts the <a href="#agent">agent</a> can read directly from the <a href="#context">context</a> right now — the user's task, files the agent has read in, <a href="#tool-result">tool results</a>, <a href="#agentsmd">AGENTS.md</a> content loaded at <a href="#session">session</a> start. Counterpart to <a href="#parametric-knowledge">parametric knowledge</a>: parametric is <em>recalled</em> from the parameters; contextual is <em>read</em> from the <a href="#context-window">window</a>. <a href="#hallucination">Hallucinations</a> are much less common when the agent works from contextual knowledge — the answer is right in front of it, not dredged up from a blurred memory.</p>
+<p class="zh" lang="zh-CN"><a href="#agent">智能体</a>当前可以直接从<a href="#context">上下文</a>中读取到的事实——用户的任务、智能体已读入的文件、<a href="#tool-result">工具结果</a>、<a href="#session">会话</a>开始时加载的<a href="#agentsmd">AGENTS.md</a>内容。与<a href="#parametric-knowledge">参数化知识</a>相对：参数化知识是从参数中<em>回忆</em>出来的；上下文知识是从<a href="#context-window">窗口</a>中<em>读取</em>的。当智能体基于上下文知识工作时，<a href="#hallucination">幻觉</a>会少得多——答案就在它眼前，而不是从模糊的记忆中 dredge 出来的。</p>
+<p><em>Reach for this term</em> only when contrasting with parametric knowledge; otherwise just say <strong>context</strong>.</p>
+<p class="zh" lang="zh-CN">只有在与参数化知识对比时才使用这个术语；否则直接说<strong>context</strong>（上下文）。</p>
+<p><em>Avoid:</em> "working memory" — contextual knowledge is what's in the window <em>now</em>; a <a href="#memory-system">memory system</a> is what gets cross-session content into it. Different scales, don't conflate.</p>
+<p class="zh" lang="zh-CN">避免使用："working memory"（工作记忆）——上下文知识是<em>此刻</em>窗口中的内容；<a href="#memory-system">记忆系统</a>是将跨会话内容送入其中的机制。不同尺度，不要混淆。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"Why does it nail the API when I paste the docs and fabricate it when I don't?"</p>
+<p class="zh" lang="zh-CN">"为什么我贴文档时它能准确命中API，不贴时就胡编乱造？"</p>
+<p>"With the docs in, it's contextual knowledge — reading off the page. Without, it's parametric and the rare endpoints blur."</p>
+<p class="zh" lang="zh-CN">"有文档在，就是上下文知识——从页面上读取。没有的话，就是参数化的，那些不常见的端点就会模糊。"</p></div></article>
+<article id="attention-relationship" class="entry" data-term="Attention relationship"><h3 class="entry-title">Attention relationship / 注意力关系</h3>
+<div class="entry-description"><p>The pairing between two tokens — meaningful pairs influence each other more than unrelated ones. A context of N tokens has ~N² of these.</p><p class="zh" lang="zh-CN">两个词元之间的配对——有意义的配对比无关的配对相互影响更大。N个词元的上下文大约有N²个这样的关系。</p></div>
+<div class="entry-body"><p>When predicting each <a href="#token">token</a>, the <a href="#model">model</a> factors in every other token in the <a href="#context">context</a> — some heavily, others barely at all. The pairing between two tokens is an <strong>attention relationship</strong>, and meaningful pairs ("her" with "Sarah", or a <code>getUser()</code> call with its <code>function getUser</code> definition) influence each other more than unrelated ones. A context of N tokens has on the order of N² relationships.</p>
+<p class="zh" lang="zh-CN">在预测每个<a href="#token">词元</a>时，<a href="#model">模型</a>会考虑<a href="#context">上下文</a>中的每一个其他词元——有些影响很大，有些几乎没有。两个词元之间的配对就是一个<strong>注意力关系</strong>，有意义的配对（如"her"和"Sarah"，或<code>getUser()</code>调用与其<code>function getUser</code>定义）比无关的配对相互影响更大。N个词元的上下文大约有N²量级的关系。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"It keeps confusing the two <code>user</code> symbols across the diff — sounds like we're in the <a href="#smart-zone">dumb zone</a>."</p>
+<p class="zh" lang="zh-CN">"它一直把diff中两个<code>user</code>符号搞混——听起来我们已经在<a href="#smart-zone">dumb zone</a>里了。"</p>
+<p>"Yeah, the attention relationship between each call site and its declaration is fighting the other one — same token shape, different bindings. Rename one and the pairings sharpen."</p>
+<p class="zh" lang="zh-CN">"是的，每个调用点与其声明之间的注意力关系在互相打架——词元形状相同，绑定不同。重命名其中一个，配对就会变清晰。"</p></div></article>
+<article id="attention-budget" class="entry" data-term="Attention budget"><h3 class="entry-title">Attention budget / 注意力预算</h3>
+<div class="entry-description"><p>Each token has a finite amount of influence to distribute across the rest of the context. Per-token, doesn't grow when context does.</p><p class="zh" lang="zh-CN">每个词元拥有有限的影响力预算，需要在上下文其余部分中分配。按词元计算，上下文增长时预算不会增加。</p></div>
+<div class="entry-body"><p>Each <a href="#token">token</a> has a finite amount of influence to distribute across the rest of the <a href="#context">context</a>. Heavy influence on <a href="#attention-relationship">one relationship</a> leaves less for others. The budget is per-token and doesn't grow when the context does, which is why long <a href="#session">sessions</a> dilute.</p>
+<p class="zh" lang="zh-CN">每个<a href="#token">词元</a>拥有有限的影响力预算，需要在<a href="#context">上下文</a>的其余部分中进行分配。对<a href="#attention-relationship">某一个关系</a>投入过多影响力，留给其他关系的就更少。预算是按词元计算的，上下文增长时预算不会增加，这就是为什么长<a href="#session">会话</a>会导致注意力稀释。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"Why does it keep ignoring the schema I pasted at the top?"</p>
+<p class="zh" lang="zh-CN">"为什么它一直忽略我贴在顶部的schema？"</p>
+<p>"We're well into the <a href="#smart-zone">dumb zone</a> — every token's attention budget is fixed, but the context kept growing. The signal on the schema is now competing with thousands of newer tokens."</p>
+<p class="zh" lang="zh-CN">"我们已经深入<a href="#smart-zone">dumb zone</a>了——每个词元的注意力预算是固定的，但上下文一直在增长。schema上的信号现在要与数千个新词元竞争。"</p></div></article>
+<article id="attention-degradation" class="entry" data-term="Attention degradation"><h3 class="entry-title">Attention degradation / 注意力退化</h3>
+<div class="entry-description"><p>As a session grows, each token's attention budget spreads across more competitors; signal on meaningful relationships shrinks.</p><p class="zh" lang="zh-CN">随着会话增长，每个词元的注意力预算被分摊到更多竞争者身上；有意义关系上的信号减弱。</p></div>
+<div class="entry-body"><p>As a <a href="#session">session</a> grows, each <a href="#token">token</a>'s <a href="#attention-budget">attention budget</a> is spread across more competitors. The signal on any one <a href="#attention-relationship">meaningful relationship</a> shrinks; noise from irrelevant <a href="#context">context</a> crowds in. Same <a href="#model">model</a>, same <a href="#parameters">parameters</a> — just more mouths to feed from the same plate. Cause of the smart zone / dumb <a href="#smart-zone">zone effect</a>.</p>
+<p class="zh" lang="zh-CN">随着<a href="#session">会话</a>的增长，每个<a href="#token">词元</a>的<a href="#attention-budget">注意力预算</a>被分摊到更多的竞争者身上。任何单个<a href="#attention-relationship">有意义关系</a>上的信号都在减弱；无关<a href="#context">上下文</a>带来的噪音蜂拥而入。同一个<a href="#model">模型</a>，同一套<a href="#parameters">参数</a>——只是要从同一个盘子里喂更多的嘴。这就是smart zone / dumb <a href="#smart-zone">zone效应</a>的成因。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"It's deep in the dumb zone — inventing generics that aren't in the type file."</p>
+<p class="zh" lang="zh-CN">"它已经深陷dumb zone了——在发明类型文件里根本不存在的泛型。"</p>
+<p>"Attention degradation. The type definitions are still in context, but the signal on them is buried under everything we've added since. <a href="#clearing">Clear</a> and reload."</p>
+<p class="zh" lang="zh-CN">"注意力退化。类型定义仍在上下文中，但它们的信号被之后添加的所有内容淹没了。<a href="#clearing">清除</a>并重新加载。"</p></div></article>
+<article id="smart-zone" class="entry" data-term="Smart zone"><h3 class="entry-title">Smart zone / 智能区</h3>
+<div class="entry-description"><p>Early in a session the agent is sharp and focused. As the session grows it drifts into a dumb zone: sloppier, forgetful, more mistakes.</p><p class="zh" lang="zh-CN">会话初期智能体敏锐专注。随着会话增长，它会滑入愚钝区：更马虎、更健忘、错误更多。</p></div>
+<div class="entry-body"><p>Early in a <a href="#session">session</a> the <a href="#agent">agent</a> is in a "smart zone" — sharp, focused, recall is good. As the session grows it drifts into a "dumb zone": sloppier, forgetful, more mistakes — and more \<em>\</em>faithfulness <a href="#hallucination">hallucinations</a>. Same <a href="#model">model</a>, same <a href="#harness">harness</a> — just more <a href="#context">context</a>. The felt effect of <a href="#attention-degradation">attention degradation</a>. On frontier models, the dumb zone commonly begins around 100,000 tokens - though this is debated. <a href="#clearing">Clear</a> or <a href="#compaction">compact</a> when the session bloats; don't push through.</p>
+<p class="zh" lang="zh-CN"><a href="#session">会话</a>初期，<a href="#agent">智能体</a>处于"智能区"——敏锐、专注、记忆良好。随着会话增长，它会滑入"愚钝区"：更马虎、更健忘、错误更多——以及更多的忠实性<a href="#hallucination">幻觉</a>。同一个<a href="#model">模型</a>，同一个<a href="#harness">harness</a>——只是<a href="#context">上下文</a>更多了。这是<a href="#attention-degradation">注意力退化</a>的实际感受。在前沿模型上，愚钝区通常在大约100,000词元处开始——尽管这一点仍有争议。会话膨胀时<a href="#clearing">清空</a>或<a href="#compaction">压缩</a>；不要硬撑。</p>
+<p>_Usage:_</p>
+<p>"It nailed the first three components and just butchered the fourth."</p>
+<p class="zh" lang="zh-CN">"前三个组件它完成得很漂亮，第四个却搞砸了。"</p>
+<p>"You're out of the smart zone — same model, just deep into the dumb zone now. Compact and reload the plan, the next component will land."</p>
+<p class="zh" lang="zh-CN">"你已经离开智能区了——同一个模型，只是现在深陷愚钝区。压缩会话并重新加载计划，下一个组件就能搞定。"</p></div></article>
+<h2 class="section-heading">Section 5 — Handoffs / 交接</h2>
+<article id="clearing" class="entry" data-term="Clearing"><h3 class="entry-title">Clearing / 清空</h3>
+<div class="entry-description"><p>Ending the current session and starting a fresh one. The next message begins with an empty session and an empty context window.</p><p class="zh" lang="zh-CN">结束当前会话并开启一个新会话。下一条消息从一个空会话和空上下文窗口开始。</p></div>
+<div class="entry-body"><p>Ending the current <a href="#session">session</a> and starting a fresh one. The next message begins with an empty session and an empty <a href="#context-window">context window</a>. Usually user-driven.</p>
+<p class="zh" lang="zh-CN">结束当前<a href="#session">会话</a>并开启一个新会话。下一条消息从一个空会话和空<a href="#context-window">上下文窗口</a>开始。通常由用户主动发起。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"It's stuck looping on the failing test."</p>
+<p class="zh" lang="zh-CN">"它卡在失败测试的循环里了。"</p>
+<p>"Just clear it — start a fresh session with the plan doc and the test file. No point fighting the existing <a href="#context">context</a>."</p>
+<p class="zh" lang="zh-CN">"直接清除——用计划文档和测试文件开启一个新会话。跟现有的<a href="#context">上下文</a>较劲没有意义。"</p></div></article>
+<article id="handoff" class="entry" data-term="Handoff"><h3 class="entry-title">Handoff / 交接</h3>
+<div class="entry-description"><p>Transferring agent context from one session to another, with no return path. Carry mechanism varies — artifact, compaction, others.</p><p class="zh" lang="zh-CN">将智能体上下文从一个会话转移到另一个会话，没有返回路径。携带机制各不相同——产物、压缩等。</p></div>
+<div class="entry-body"><p>Transferring <a href="#agent">agent</a> <a href="#context">context</a> from one <a href="#session">session</a> to another, with no return path. The carry mechanism varies — a written <a href="#handoff-artifact">handoff artifact</a>, an in-memory summary (<a href="#compaction">compaction</a>), and others. Distinct from <a href="#clearing">clearing</a> (no transfer at all). Reasons vary: switching roles (planner → implementer), kicking off an <a href="#afk">AFK</a> run, fanning out to parallel sessions, or freeing up <a href="#context-window">context window</a> room.</p>
+<p class="zh" lang="zh-CN">将<a href="#agent">智能体</a>的<a href="#context">上下文</a>从一个<a href="#session">会话</a>转移到另一个会话，没有返回路径。携带机制各不相同——一份书面的<a href="#handoff-artifact">交接产物</a>、内存中的摘要（<a href="#compaction">压缩</a>）等。与<a href="#clearing">清空</a>不同（完全不转移）。原因各不相同：切换角色（规划者 → 实现者）、启动<a href="#afk">AFK</a>（离开键盘）运行、分散到并行会话，或释放<a href="#context-window">上下文窗口</a>空间。</p>
+<p><em>Usage:</em></p>
+<p>"Planning session is getting heavy — should I just keep going?"</p>
+<p class="zh" lang="zh-CN">"规划会话越来越沉重了——我应该继续吗？"</p>
+<p>"Do a handoff. Write the decisions to a doc, clear, start the implementation in a fresh session reading from it."</p>
+<p class="zh" lang="zh-CN">"做一次交接。把决策写到文档里，清空，然后在一个新的会话中读取它并开始实现。"</p></div></article>
+<article id="handoff-artifact" class="entry" data-term="Handoff artifact"><h3 class="entry-title">Handoff artifact / 交接产物</h3>
+<div class="entry-description"><p>A document used as the carry mechanism for a handoff — written by one session to be read by another.</p><p class="zh" lang="zh-CN">用作交接携带机制的文档——由一个会话撰写，供另一个会话阅读。</p></div>
+<div class="entry-body"><p>A document used as the carry mechanism for a <a href="#handoff">handoff</a> — written by one <a href="#session">session</a> to be read by another. One way among several (see also <strong>compaction</strong>, <a href="#compaction">compaction</a>).</p>
+<p class="zh" lang="zh-CN">用作<a href="#handoff">交接</a>携带机制的文档——由一个<a href="#session">会话</a>撰写，供另一个会话阅读。多种方式之一（另见<strong>压缩</strong>，<a href="#compaction">compaction</a>）。</p>
+<p><em>Usage:</em></p>
+<p>"How do I split this between the planning <a href="#agent">agent</a> and the implementing one?"</p>
+<p class="zh" lang="zh-CN">"我该如何在规划<a href="#agent">智能体</a>和实现智能体之间拆分这个任务？"</p>
+<p>"Have the planner write a handoff artifact — file paths, decisions, constraints. The implementer's session opens with a pointer to the artifact and works from it as its brief."</p>
+<p class="zh" lang="zh-CN">"让规划者写一份交接产物——文件路径、决策、约束条件。实现者的会话以指向该产物的指针开始，并将其作为工作简报。"</p></div></article>
+<article id="spec" class="entry" data-term="Spec"><h3 class="entry-title">Spec / 规格说明</h3>
+<div class="entry-description"><p>A handoff artifact describing a multi-session piece of work — what's being built, not how each session does its share. Made of tickets.</p><p class="zh" lang="zh-CN">描述多会话工作的交接产物——说明要构建什么，而非每个会话如何分工。由工单组成。</p></div>
+<div class="entry-body"><p>A <a href="#handoff-artifact">handoff artifact</a> describing a multi-<a href="#session">session</a> piece of work — what's being built, not how each session does its share. Mutates as work progresses. Made of <a href="#ticket">tickets</a>.</p>
+<p class="zh" lang="zh-CN">描述多<a href="#session">会话</a>工作的<a href="#handoff-artifact">交接产物</a>——说明要构建什么，而非每个会话如何分工。随着工作推进而演变。由<a href="#ticket">工单</a>组成。</p>
+<p><em>Usage:</em></p>
+<p>"Should this all be one session?"</p>
+<p class="zh" lang="zh-CN">"这些应该全部放在一个会话里吗？"</p>
+<p>"No, write it up as a spec — break it into tickets, run each one in its own session. Trying to do the whole thing in a single <a href="#context">context</a> will hit the <a href="#smart-zone">dumb zone</a> before you're halfway."</p>
+<p class="zh" lang="zh-CN">"不，把它写成规格说明——拆分成工单，每个工单在独立的会话中执行。试图在单个<a href="#context">上下文</a>里做完所有事情，不到一半就会进入<a href="#smart-zone">愚钝区</a>。"</p></div></article>
+<article id="ticket" class="entry" data-term="Ticket"><h3 class="entry-title">Ticket / 工单</h3>
+<div class="entry-description"><p>A handoff artifact scoping one session of work. Stands alone or hangs off a spec. Can block or be blocked by sibling tickets.</p><p class="zh" lang="zh-CN">界定一个会话工作范围的交接产物。独立存在或依附于规格说明。可以被同级工单阻塞或阻塞同级工单。</p></div>
+<div class="entry-body"><p>A <a href="#handoff-artifact">handoff artifact</a> scoping one <a href="#session">session</a> of work. Stands alone, or hangs off a <a href="#spec">spec</a> as one of its children. Tickets can block or be blocked by sibling tickets, so the order of work falls out of their dependency graph rather than a linear plan.</p>
+<p class="zh" lang="zh-CN">界定一个<a href="#session">会话</a>工作范围的<a href="#handoff-artifact">交接产物</a>。独立存在，或作为子项依附于<a href="#spec">规格说明</a>。工单可以阻塞或被同级工单阻塞，因此工作顺序由它们的依赖图决定，而非线性计划。</p>
+<p><em>Usage:</em></p>
+<p>"Where do I start on the migration spec?"</p>
+<p class="zh" lang="zh-CN">"迁移规格说明我该从哪里开始？"</p>
+<p>"Look at the ticket graph — the schema change blocks the backfill, the backfill blocks the API switch. Pick a leaf and run a session on it."</p>
+<p class="zh" lang="zh-CN">"看工单图——schema变更阻塞回填，回填阻塞API切换。选一个叶子节点，在上面运行一个会话。"</p></div></article>
+<article id="compaction" class="entry" data-term="Compaction"><h3 class="entry-title">Compaction / 压缩</h3>
+<div class="entry-description"><p>A handoff done in-memory: the previous session's history is summarised and seeds a fresh session. Lossy — detail traded for headroom.</p><p class="zh" lang="zh-CN">一种在内存中完成的交接：将前一个会话的历史总结后作为新会话的种子。有损的——用细节换取空间。</p></div>
+<div class="entry-body"><p>A <a href="#handoff">handoff</a> done in-memory: the previous <a href="#session">session</a>'s history is summarised and seeds a fresh session. Lossy — detail traded for headroom. Triggered manually by the user, or <a href="#autocompact">automatically</a>.</p>
+<p class="zh" lang="zh-CN">一种在内存中完成的<a href="#handoff">交接</a>：将前一个<a href="#session">会话</a>的历史总结后作为新会话的种子。有损的——用细节换取空间。由用户手动触发，或<a href="#autocompact">自动触发</a>。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"<a href="#context">Context</a>'s getting heavy and I still have the test pass to do."</p>
+<p class="zh" lang="zh-CN">"<a href="#context">上下文</a>越来越沉重，但我还要让测试通过。"</p>
+<p>"Compact before you start — write what's load-bearing into the summary prompt so the new session keeps the schema decisions and drops the exploration."</p>
+<p class="zh" lang="zh-CN">"在开始之前先压缩——把关键信息写进总结提示词里，这样新会话会保留schema决策，丢掉探索过程。"</p></div></article>
+<article id="autocompact" class="entry" data-term="Autocompact"><h3 class="entry-title">Autocompact / 自动压缩</h3>
+<div class="entry-description"><p>Compaction triggered automatically by the harness when the context window approaches full.</p><p class="zh" lang="zh-CN">当上下文窗口接近满载时，由harness自动触发的压缩。</p></div>
+<div class="entry-body"><p><a href="#compaction">Compaction</a> triggered automatically by the <a href="#harness">harness</a> when the <a href="#context-window">context window</a> approaches full.</p>
+<p class="zh" lang="zh-CN">当<a href="#context-window">上下文窗口</a>接近满载时，由<a href="#harness">harness</a>自动触发的<a href="#compaction">压缩</a>。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"It doesn't seem to remember what we decided about the schema earlier."</p>
+<p class="zh" lang="zh-CN">"它好像不记得我们之前关于schema的决定。"</p>
+<p>"Autocompact fired between <a href="#turn">turns</a> — the early decisions got summarised and we must have lost something. Reload the plan doc, or compact manually next time so you control what gets kept."</p>
+<p class="zh" lang="zh-CN">"Autocompact在<a href="#turn">轮次</a>之间触发了——早期的决定被总结了，我们肯定丢失了一些东西。重新加载计划文档，或者下次手动压缩，这样你就能控制保留什么。"</p></div></article>
+<h2 class="section-heading">Section 6 — Memory and Steering / 记忆与引导</h2>
+<article id="memory-system" class="entry" data-term="Memory system"><h3 class="entry-title">Memory system / 记忆系统</h3>
+<div class="entry-description"><p>A system that attempts to make an agent stateful across sessions by persisting to the environment and reloading at session start.</p><p class="zh" lang="zh-CN">一种通过持久化到环境并在会话开始时重新加载，试图使智能体跨会话保持状态的系统。</p></div>
+<div class="entry-body"><p>A system that attempts to make an <a href="#agent">agent</a> <a href="#stateful">stateful</a> across <a href="#session">sessions</a>. Persists information into the <a href="#environment">environment</a> during a session and reloads it into the <a href="#context-window">context window</a> at the start of future ones, so the agent carries continuity beyond the user <a href="#clearing">clearing</a> the session.</p>
+<p class="zh" lang="zh-CN">一种试图使<a href="#agent">智能体</a>跨<a href="#session">会话</a>保持<a href="#stateful">有状态</a>的系统。在会话期间将信息持久化到<a href="#environment">环境</a>中，并在未来会话开始时重新加载到<a href="#context-window">上下文窗口</a>中，从而使智能体在用户<a href="#clearing">清空</a>会话之后仍保持连续性。</p>
+<p><em>Usage:</em></p>
+<p>"I keep having to re-tell it I'm on Postgres, not MySQL."</p>
+<p class="zh" lang="zh-CN">"我一直得反复告诉它我用的是 Postgres，不是 MySQL。"</p>
+<p>"Wire up a memory system — write what it learns to the <a href="#filesystem">filesystem</a> on the first <a href="#turn">turn</a>, reload it at session start. The <a href="#model">model</a> itself is <a href="#stateless">stateless</a>; the memory layer fakes continuity."</p>
+<p class="zh" lang="zh-CN">"接入一个记忆系统——在第一<a href="#turn">轮次</a>就把它学到的东西写到<a href="#filesystem">文件系统</a>中，在会话开始时重新加载。<a href="#model">模型</a>本身是<a href="#stateless">无状态</a>的；记忆层模拟出连续性。"</p></div></article>
+<article id="agentsmd" class="entry" data-term="AGENTS.md"><h3 class="entry-title">AGENTS.md / AGENTS.md</h3>
+<div class="entry-description"><p>A file in the environment that the harness loads into the context window at session start — the project's standing brief to the agent.</p><p class="zh" lang="zh-CN">环境中由harness在会话开始时加载到上下文窗口的文件——项目给智能体的常驻简报。</p></div>
+<div class="entry-body"><p>A file in the <a href="#environment">environment</a> that the <a href="#harness">harness</a> loads into the <a href="#context-window">context window</a> at <a href="#session">session</a> start — the project's standing brief to the <a href="#agent">agent</a>. Cross-harness convention.</p>
+<p class="zh" lang="zh-CN"><a href="#environment">环境</a>中由<a href="#harness">harness</a>在<a href="#session">会话</a>开始时加载到<a href="#context-window">上下文窗口</a>的文件——项目给<a href="#agent">智能体</a>的常驻简报。跨harness的通用约定。</p>
+<p><em>Avoid:</em> using AGENTS.md for content that should be <a href="#progressive-disclosure">progressively disclosed</a> — anything in it pays a <a href="#token">token</a> cost every <a href="#turn">turn</a>.</p>
+<p class="zh" lang="zh-CN"><em>避免：</em> 将应该<a href="#progressive-disclosure">渐进式披露</a>的内容放在AGENTS.md中——里面的任何内容每<a href="#turn">轮次</a>都要支付<a href="#token">词元</a>成本。</p>
+<p><em>Usage:</em></p>
+<p>"Why is every session starting with 4k tokens already burned?"</p>
+<p class="zh" lang="zh-CN">"为什么每个会话一开始就已经烧了4k词元？"</p>
+<p>"Check AGENTS.md — someone pasted the entire style guide in there instead of putting it behind a <a href="#skill">skill</a>."</p>
+<p class="zh" lang="zh-CN">"检查一下AGENTS.md——有人把整个样式指南贴进去了，而不是把它放在<a href="#skill">技能</a>后面按需加载。"</p></div></article>
+<article id="progressive-disclosure" class="entry" data-term="Progressive disclosure"><h3 class="entry-title">Progressive disclosure / 渐进式披露</h3>
+<div class="entry-description"><p>Loading only the context an agent needs right now, with context pointers to the rest. Borrowed from UI design.</p><p class="zh" lang="zh-CN">只加载智能体当前需要的上下文，其余部分通过上下文指针引用。借自UI设计概念。</p></div>
+<div class="entry-body"><p>Loading only the <a href="#context">context</a> an <a href="#agent">agent</a> needs right now, with <a href="#context-pointer">context pointers</a> to the rest. Borrowed from UI design.</p>
+<p class="zh" lang="zh-CN">只加载<a href="#agent">智能体</a>当前需要的<a href="#context">上下文</a>，其余部分通过<a href="#context-pointer">上下文指针</a>引用。借自UI设计概念。</p>
+<p>_Usage:_</p>
+<p>"Should I dump the entire style guide into <a href="#agentsmd">AGENTS.md</a>?"</p>
+<p class="zh" lang="zh-CN">"我应该把整个样式指南都塞进<a href="#agentsmd">AGENTS.md</a>里吗？"</p>
+<p>"No — progressive disclosure. Reference the style guide as a <a href="#skill">skill</a> the agent loads when it actually needs to write a component. AGENTS.md pays the <a href="#token">token</a> cost every <a href="#turn">turn</a>."</p>
+<p class="zh" lang="zh-CN">"不——用渐进式披露。将样式指南作为<a href="#skill">技能</a>引用，让智能体在真正需要写组件时才加载。AGENTS.md里的内容每<a href="#turn">轮次</a>都要支付<a href="#token">词元</a>成本。"</p></div></article>
+<article id="context-pointer" class="entry" data-term="Context pointer"><h3 class="entry-title">Context pointer / 上下文指针</h3>
+<div class="entry-description"><p>A mention in one document that points to another, so the agent can pull it into context only when the task calls for it.</p><p class="zh" lang="zh-CN">一个文档中指向另一个文档的引用，让智能体只在任务需要时才将其拉入上下文。</p></div>
+<div class="entry-body"><p>A mention in one document that points to another, so the <a href="#agent">agent</a> can pull it into the <a href="#context-window">context window</a> only when the task calls for it. The unit <a href="#progressive-disclosure">progressive disclosure</a> is built from.</p>
+<p class="zh" lang="zh-CN">一个文档中指向另一个文档的引用，让<a href="#agent">智能体</a>只在任务需要时才将其拉入<a href="#context-window">上下文窗口</a>。这是构建<a href="#progressive-disclosure">渐进式披露</a>的基本单元。</p>
+<p>_Avoid:_ "reference" — too dry; doesn't convey that following it pulls more context in. "Portal" — too florid.</p>
+<p class="zh" lang="zh-CN">避免使用："reference"（引用）——太干巴巴；没有传达出跟随它会拉入更多上下文的意思。"Portal"（传送门）——太花哨。</p>
+<p>_Usage:_</p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"AGENTS.md is getting huge."</p>
+<p class="zh" lang="zh-CN">"AGENTS.md变得太大了。"</p>
+<p>"Most of it should be context pointers, not content. Keep the always-on rules inline; turn the deploy runbook and the style guide into <a href="#skill">skills</a> and leave a context pointer behind."</p>
+<p class="zh" lang="zh-CN">"其中大部分应该是context pointer，而不是内容。把常驻规则保留在行内；把部署运行手册和风格指南转成<a href="#skill">技能</a>，然后留下一个context pointer。"</p></div></article>
+<article id="skill" class="entry" data-term="Skill"><h3 class="entry-title">Skill / 技能</h3>
+<div class="entry-description"><p>A teachable capability bundled as a unit — kept out of the context window until a context pointer pulls it in for the task at hand.</p><p class="zh" lang="zh-CN">打包为单元的可教授能力——在上下文窗口外待命，直到上下文指针将其拉入当前任务。</p></div>
+<div class="entry-body"><p>A teachable capability bundled as a unit — instructions and resources for doing one task well, kept in the <a href="#environment">environment</a> until a <a href="#context-pointer">context pointer</a> pulls it into the <a href="#context-window">context window</a> for the task at hand. The unit of <a href="#progressive-disclosure">progressive disclosure</a> in a <a href="#harness">harness</a>.</p>
+<p class="zh" lang="zh-CN">打包为单元的可教授能力——做好一件事所需的指令和资源，保存在<a href="#environment">环境</a>中，直到<a href="#context-pointer">上下文指针</a>将其拉入<a href="#context-window">上下文窗口</a>以处理当前任务。<a href="#harness">harness</a>中<a href="#progressive-disclosure">渐进式披露</a>的基本单元。</p>
+<p>_Avoid:_ "<a href="#tool">tool</a>" — a tool is what the <a href="#agent">agent</a> _calls_; a skill is instructions it _reads_.</p>
+<p class="zh" lang="zh-CN">_避免：_ 使用"<a href="#tool">工具</a>"——工具是<a href="#agent">智能体</a>_调用_的东西；技能是它_阅读_的指令。</p>
+<p>_Usage:_</p>
+<p>"Where should I put the deploy runbook?"</p>
+<p class="zh" lang="zh-CN">"部署操作手册应该放在哪里？"</p>
+<p>"As a skill — the agent loads it only when the task involves deploys. In <a href="#agentsmd">AGENTS.md</a> it'd burn <a href="#token">tokens</a> on every <a href="#turn">turn</a> for something we use weekly."</p>
+<p class="zh" lang="zh-CN">"作为技能——智能体只在任务涉及部署时才加载它。如果放在<a href="#agentsmd">AGENTS.md</a>里，每周才用一次的东西却要每<a href="#turn">轮次</a>都烧<a href="#token">词元</a>。"</p></div></article>
+<article id="subagent" class="entry" data-term="Subagent"><h3 class="entry-title">Subagent / 子智能体</h3>
+<div class="entry-description"><p>An agent spawned by another agent via a tool call. Runs in its own session, reports a single tool result. Cannot spawn further subagents.</p><p class="zh" lang="zh-CN">由另一个智能体通过工具调用派生的智能体。在自己的会话中运行，返回单个工具结果。不能进一步派生子智能体。</p></div>
+<div class="entry-body"><p>An <a href="#agent">agent</a> spawned by another agent via a <a href="#tool-call">tool call</a>. Runs in its own <a href="#session">session</a> with its own <a href="#context-window">context window</a>, and reports a single <a href="#tool-result">tool result</a> back. Distinct from a <a href="#handoff">handoff</a> — the parent specifically expects a return; a handoff has no return path. <strong>Cannot spawn further subagents</strong> — the tree is one level deep. Subagents exist to isolate <a href="#context">context</a>, not to compose hierarchies.</p>
+<p class="zh" lang="zh-CN">由另一个智能体通过<a href="#tool-call">工具调用</a>派生的<a href="#agent">智能体</a>。在自己的<a href="#session">会话</a>中运行，拥有独立的<a href="#context-window">上下文窗口</a>，并返回单个<a href="#tool-result">工具结果</a>。与<a href="#handoff">交接</a>不同——父智能体明确期待返回值；交接没有返回路径。<strong>不能进一步派生子智能体</strong>——树只有一层深度。子智能体的存在是为了隔离<a href="#context">上下文</a>，而非构建层级结构。</p>
+<p><em>Usage:</em></p>
+<p>"The grep results are blowing out my context."</p>
+<p class="zh" lang="zh-CN">"grep结果把我的上下文撑爆了。"</p>
+<p>"Spawn a subagent to do the search — it'll burn its own context window on the noise and report back the two file paths you actually need."</p>
+<p class="zh" lang="zh-CN">"派生一个子智能体来执行搜索——它会在自己的上下文窗口中消耗这些噪音，然后返回你真正需要的两个文件路径。"</p></div></article>
+<h2 class="section-heading">Section 7 — Patterns of Work / 工作模式</h2>
+<article id="human-in-the-loop" class="entry" data-term="Human-in-the-loop"><h3 class="entry-title">Human-in-the-loop / 人在回路中</h3>
+<div class="entry-description"><p>A working pattern where one or more humans pair with the agent during a session — reviewing, redirecting, or collaborating in real time.</p><p class="zh" lang="zh-CN">一种工作模式，一个或多个人类在会话期间与智能体配对——实时审查、调整方向或协作。</p></div>
+<div class="entry-body"><p>A working pattern where one or more humans pair with the <a href="#agent">agent</a> during a <a href="#session">session</a> — reviewing, redirecting, or collaborating in real time. The human is present and engaged, not just gating individual actions.</p>
+<p class="zh" lang="zh-CN">一种工作模式，一个或多个人类在<a href="#session">会话</a>期间与<a href="#agent">智能体</a>配对——实时审查、调整方向或协作。人类是全程在场并积极参与的，而不仅仅是把关单个操作。</p>
+<p><em>Usage:</em></p>
+<p>"Run this <a href="#afk">AFK</a> overnight?"</p>
+<p class="zh" lang="zh-CN">"让这<a href="#afk">AFK</a>（离开键盘）运行一整夜？"</p>
+<p>"No, schema migration — keep it human-in-the-loop. I want to see each step and steer if it picks the wrong column to backfill from."</p>
+<p class="zh" lang="zh-CN">"不，这是 schema 迁移——保持人机协作（human-in-the-loop）。我想看到每一步，如果它选错了回填来源的列，我要能及时调整方向。"</p></div></article>
+<article id="afk" class="entry" data-term="AFK"><h3 class="entry-title">AFK / AFK（离开键盘）</h3>
+<div class="entry-description"><p>A working pattern where the user kicks off a session and leaves the agent to run unattended (away from keyboard).</p><p class="zh" lang="zh-CN">一种工作模式：用户启动会话后离开，让智能体无人值守地运行（离开键盘）。</p></div>
+<div class="entry-body"><p>Away from keyboard. A working pattern where the user kicks off a <a href="#session">session</a> and leaves the <a href="#agent">agent</a> to run unattended. The throughput multiplier of AI coding — many AFK sessions can run in parallel while you sleep, eat, or work on something else. Usually requires a permissive <a href="#permission-mode">permission mode</a> plus <a href="#sandbox">sandboxing</a> to be safe.</p>
+<p class="zh" lang="zh-CN">离开键盘（Away from keyboard）。一种工作模式：用户启动一个<a href="#session">会话</a>后离开，让<a href="#agent">智能体</a>无人值守地运行。这是AI编程的吞吐量倍增器——你可以同时运行多个AFK会话，在你睡觉、吃饭或做其他事情的时候并行推进。通常需要宽松的<a href="#permission-mode">权限模式</a>加上<a href="#sandbox">沙盒</a>隔离才能安全进行。</p>
+<p>_Avoid:_ "background agent" — centers the machine ("running in the background") rather than the human pattern ("user has walked away"). AFK is the load-bearing fact: the user isn't watching.</p>
+<p class="zh" lang="zh-CN">避免使用："background agent"（后台智能体）——它强调的是机器（"在后台运行"），而非人的行为模式（"用户已经走开了"）。AFK才是核心事实：用户没有在盯着看。</p>
+<p>_Usage:_</p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"I'm running this AFK — three sandboxed agents on the refactor, reviewing the PRs in the morning."</p>
+<p class="zh" lang="zh-CN">"我在AFK运行这个——三个沙盒化的智能体在做重构，明早review PR。"</p>
+<p>"<a href="#agent-mode">Bypass permissions</a>?"</p>
+<p class="zh" lang="zh-CN">"<a href="#agent-mode">绕过权限</a>？"</p>
+<p>"Yeah, read-only <a href="#filesystem">filesystem</a>, no network."</p>
+<p class="zh" lang="zh-CN">"对，只读<a href="#filesystem">文件系统</a>，没有网络。"</p></div></article>
+<article id="automated-check" class="entry" data-term="Automated check"><h3 class="entry-title">Automated check / 自动检查</h3>
+<div class="entry-description"><p>A deterministic verification that runs in the environment — tests, type checks, lints, build, pre-commit hooks. Pass/fail, no judgement.</p><p class="zh" lang="zh-CN">在环境中运行的确定性验证——测试、类型检查、代码检查、构建、预提交钩子。通过/失败，不带判断。</p></div>
+<div class="entry-body"><p>A deterministic verification that runs in the <a href="#environment">environment</a> — tests, type checks, lints, build, pre-commit hooks. Pass/fail, no judgement. The signal an <a href="#agent">agent</a> can self-correct from without involving anyone else. A flaky test is a broken check, not a non-check; automated checks are deterministic <em>by design</em>.</p>
+<p class="zh" lang="zh-CN">在<a href="#environment">环境</a>中运行的确定性验证——测试、类型检查、代码检查（lint）、构建、预提交钩子。通过/失败，不带主观判断。<a href="#agent">智能体</a>可以据此自行修正，无需他人介入。一个不稳定（flaky）的测试是一个坏掉的检查，而不是"非检查"；自动化检查在设计上就是确定性的。</p>
+<p><em>Avoid:</em> "feedback loop" / "backpressure" — both lump checks together with <a href="#automated-review">review</a>. <em>Avoid:</em> "test" — tests are automated checks, but not all automated checks are tests.</p>
+<p class="zh" lang="zh-CN">避免使用："feedback loop"（反馈循环）/ "backpressure"（背压）——两者都把检查和<a href="#automated-review">review</a>混为一谈。避免使用："test"（测试）——测试是自动化检查，但并非所有自动化检查都是测试。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"The agent keeps shipping broken code in the <a href="#afk">AFK</a> runs."</p>
+<p class="zh" lang="zh-CN">"智能体在<a href="#afk">AFK</a>运行中一直在提交有问题的代码。"</p>
+<p>"What automated checks are wired into the <a href="#sandbox">sandbox</a>?"</p>
+<p class="zh" lang="zh-CN">"<a href="#sandbox">沙盒</a>里接入了哪些自动化检查？"</p>
+<p>"Just the unit tests."</p>
+<p class="zh" lang="zh-CN">"只有单元测试。"</p>
+<p>"Add typecheck and lint — it'll self-correct from those before the PR ever lands."</p>
+<p class="zh" lang="zh-CN">"加上类型检查和代码检查——它会在PR提交前就根据这些自行修正。"</p></div></article>
+<article id="automated-review" class="entry" data-term="Automated review"><h3 class="entry-title">Automated review / 自动审查</h3>
+<div class="entry-description"><p>An agent reviewing another agent's work, often with a different model or system prompt. Non-deterministic: it forms a judgement.</p><p class="zh" lang="zh-CN">一个智能体审查另一个智能体的工作，通常使用不同的模型或系统提示词。非确定性的：它会形成判断。</p></div>
+<div class="entry-body"><p>An <a href="#agent">agent</a> reviewing another agent's work, often with a different <a href="#model">model</a> or <a href="#system-prompt">system prompt</a>. Non-deterministic: it forms a judgement. Runs anywhere — pre-merge on a PR, post-hoc on commit history, mid-session as a <a href="#subagent">subagent</a>. An LLM-as-judge in CI is automated review, not an <a href="#automated-check">automated check</a>; what the assertion <em>does</em> decides the category, not where it runs.</p>
+<p class="zh" lang="zh-CN">一个<a href="#agent">智能体</a>审查另一个智能体的工作，通常使用不同的<a href="#model">模型</a>或<a href="#system-prompt">系统提示词</a>。非确定性的：它会形成判断。可以在任何地方运行——PR合并前、提交历史的事后审查、会话中途作为<a href="#subagent">子智能体</a>。CI中以LLM作为裁判的是自动化审查，不是<a href="#automated-check">自动化检查</a>；决定类别的是断言<em>做什么</em>，而不是它在哪里运行。</p>
+<p><em>Avoid:</em> "AI review" / "agent review" — too vague to distinguish from the working agent itself.</p>
+<p class="zh" lang="zh-CN">避免使用："AI review" / "agent review"——太模糊，无法与工作智能体本身区分开来。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"We're getting too many bad PRs from the <a href="#afk">AFK</a> runs."</p>
+<p class="zh" lang="zh-CN">"我们从<a href="#afk">AFK</a>运行中收到了太多有问题的PR。"</p>
+<p>"Add an automated review step before merge — different model, separate system prompt, scoped to security and contract changes."</p>
+<p class="zh" lang="zh-CN">"在合并前加一个自动化审查步骤——不同的模型、独立的系统提示词，范围限定在安全性和契约变更上。"</p></div></article>
+<article id="human-review" class="entry" data-term="Human review"><h3 class="entry-title">Human review / 人工审查</h3>
+<div class="entry-description"><p>The user reading the code the agent produced and forming a judgement on it. Reading the diff counts; reading the summary doesn't.</p><p class="zh" lang="zh-CN">用户阅读智能体生成的代码并对其进行评判。阅读 diff 算；阅读摘要不算。</p></div>
+<div class="entry-body"><p>The user reading the code the <a href="#agent">agent</a> produced and forming a judgement on it. Reading the diff or the changed files counts; reading the agent's <em>description</em> of what it did does not — narration is not the artifact.</p>
+<p class="zh" lang="zh-CN">用户阅读<a href="#agent">智能体</a>生成的代码并对其进行评判。阅读 diff 或修改后的文件才算；阅读智能体对自己所做工作的<em>描述</em>不算——叙述不是产物本身。</p>
+<p><em>Avoid:</em> "code review" alone — ambiguous between human and <a href="#automated-review">automated</a>.</p>
+<p class="zh" lang="zh-CN"><em>避免：</em> 单独使用"code review"——在人类审查和<a href="#automated-review">自动化审查</a>之间会产生歧义。</p>
+<p><em>Usage:</em></p>
+<p>"I human-reviewed the <a href="#afk">AFK</a> output."</p>
+<p class="zh" lang="zh-CN">"我人工审查了<a href="#afk">AFK</a>（离开键盘）的输出。"</p>
+<p>"You read the diff or just the summary?"</p>
+<p class="zh" lang="zh-CN">"你读了 diff 还是只看了摘要？"</p>
+<p>"Diff. The summary said it deleted dead code — turned out the function was called from a generated file."</p>
+<p class="zh" lang="zh-CN">"Diff。摘要说它删除了无用代码——结果发现那个函数是从一个生成的文件中被调用的。"</p></div></article>
+<article id="vibe-coding" class="entry" data-term="Vibe coding"><h3 class="entry-title">Vibe coding / Vibe编程</h3>
+<div class="entry-description"><p>A working pattern where the user accepts the agent's code without human review. The diff is treated as opaque.</p><p class="zh" lang="zh-CN">一种工作模式，用户在没有人工审查的情况下接受智能体的代码。diff被视为黑箱。</p></div>
+<div class="entry-body"><p>A working pattern where the user accepts the <a href="#agent">agent</a>'s code without <a href="#human-review">human review</a>. The diff is treated as opaque — what matters is whether the program behaves, not what's inside. <a href="#automated-review">Automated review</a> and <a href="#automated-check">automated checks</a> may still run; vibe coding is silent on both.</p>
+<p class="zh" lang="zh-CN">一种工作模式，用户在没有<a href="#human-review">人工审查</a>的情况下接受<a href="#agent">智能体</a>的代码。diff被视为黑箱——重要的是程序是否正常运行，而不是里面写了什么。<a href="#automated-review">自动化审查</a>和<a href="#automated-check">自动化检查</a>仍可能运行；Vibe编程对这两者不置可否。</p>
+<p><em>Avoid:</em> "vibe coding" as a synonym for "low-quality AI coding" — the term names the review stance, not the resulting code.</p>
+<p class="zh" lang="zh-CN"><em>避免：</em> 将"Vibe编程"作为"低质量AI编程"的同义词——这个词命名的是审查立场，而非产出的代码质量。</p>
+<p><em>Usage:</em></p>
+<p>"Did you read what it changed in the auth flow?"</p>
+<p class="zh" lang="zh-CN">"你看了它在认证流程里改了什么吗？"</p>
+<p>"Vibe coded it — login still works, that's all I checked."</p>
+<p class="zh" lang="zh-CN">"Vibe编程的——登录还能用，我就检查了这些。"</p>
+<p>"Read the diff before you push, vibing on auth is how secrets leak into logs."</p>
+<p class="zh" lang="zh-CN">"推送之前看看diff，在认证上搞Vibe编程就是密码泄露到日志里的原因。"</p></div></article>
+<article id="design-concept" class="entry" data-term="Design concept"><h3 class="entry-title">Design concept / 设计概念</h3>
+<div class="entry-description"><p>The shared understanding of what's being built, held in common between user and agent but separate from any asset.</p><p class="zh" lang="zh-CN">对用户和智能体共同持有的、关于正在构建什么的共享理解，独立于任何具体产物。</p></div>
+<div class="entry-body"><p>The shared understanding of what's being built, held in common between user and <a href="#agent">agent</a> but separate from any asset. Brookes' term (<em>The Design of Design</em>): the conversation, <a href="#handoff-artifact">handoff artifacts</a>, and the code are all assets that try to capture or reach the design concept, but none of them <em>are</em> it. Quality of the design concept is felt through the quality of the conversation that built it.</p>
+<p class="zh" lang="zh-CN">对用户和<a href="#agent">智能体</a>共同持有的、关于正在构建什么的共享理解，独立于任何具体产物。Brookes的术语（出自<em>The Design of Design</em>）：对话、<a href="#handoff-artifact">交接产物</a>和代码都是试图捕捉或接近design concept的产物，但它们本身<em>不是</em>design concept。design concept的质量体现在构建它的对话质量中。</p>
+<p><em>Usage:</em></p>
+<p class="zh" lang="zh-CN">用法：</p>
+<p>"It's writing exactly what I asked for and it's still wrong."</p>
+<p class="zh" lang="zh-CN">"它写的正是我要求的，但仍然是错的。"</p>
+<p>"You don't share a design concept yet — it's filling gaps with assumptions. Keep talking until cancellation, refunds, and partial fulfilment all line up between you before you let it write a <a href="#spec">spec</a>."</p>
+<p class="zh" lang="zh-CN">"你们还没有共享一个design concept——它在用假设填补空白。继续讨论，直到取消、退款和部分履行这些概念在你们之间达成一致，再让它写<a href="#spec">规格说明</a>。"</p></div></article>
+<article id="grilling" class="entry" data-term="Grilling"><h3 class="entry-title">Grilling / 拷问</h3>
+<div class="entry-description"><p>A technique for developing a design concept: the agent interviews the user Socratically, one decision at a time.</p><p class="zh" lang="zh-CN">一种开发设计概念的技术：智能体以苏格拉底式方式逐一向用户提问，每次一个决策。</p></div>
+<div class="entry-body"><p>A technique for developing a <a href="#design-concept">design concept</a> with an <a href="#agent">agent</a>: the agent interviews the user Socratically, one decision at a time, proposing a recommended answer for each. Slows the rush to a finished plan — no <a href="#handoff-artifact">handoff artifact</a> is written until the concept stabilises.</p>
+<p class="zh" lang="zh-CN">一种与<a href="#agent">智能体</a>共同开发<a href="#design-concept">设计概念</a>的技术：智能体以苏格拉底式方式逐一向用户提问，每次一个决策，并为每个问题推荐一个答案。这能减缓急于完成计划的冲动——在概念稳定之前不会撰写任何<a href="#handoff-artifact">交接产物</a>。</p>
+<p><em>Usage:</em></p>
+<p>"It went straight to writing the <a href="#spec">spec</a> and got the cancellation logic wrong."</p>
+<p class="zh" lang="zh-CN">"它直接开始写<a href="#spec">规格说明</a>，结果把取消逻辑搞错了。"</p>
+<p>"Grill it first — make it ask you about partial cancels, refunds, and timing before it commits anything to the doc. Cheaper to resolve in conversation than in code."</p>
+<p class="zh" lang="zh-CN">"先拷问它——让它在写入文档之前先问你关于部分取消、退款和时机的问题。在对话中解决比写在代码里再修改要便宜得多。"</p></div></article>
+  </main>
+</div>
+<script>
+(function() {
+  const searchInput = document.getElementById('search');
+  const tocTerms = document.querySelectorAll('.toc-term');
+  const entries = document.querySelectorAll('.entry');
+  const tocSections = document.querySelectorAll('.toc-section');
+  const langBtns = document.querySelectorAll('.lang-toggle button');
+
+  // Search
+  searchInput.addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    if (!q) {
+      tocTerms.forEach(t => { t.classList.remove('hidden'); t.innerHTML = t.textContent; });
+      entries.forEach(en => en.style.display = '');
+      tocSections.forEach(s => s.open = true);
+      return;
+    }
+    tocSections.forEach(s => s.open = true);
+    tocTerms.forEach(t => {
+      const text = t.textContent.toLowerCase();
+      if (text.includes(q)) {
+        t.classList.remove('hidden');
+        const re = new RegExp('(' + q.replace(/[.*+?^${}()|[]\]/g, '\$&') + ')', 'gi');
+        t.innerHTML = t.textContent.replace(re, '<mark>$1</mark>');
+      } else {
+        t.classList.add('hidden');
+      }
+    });
+    entries.forEach(en => {
+      const term = en.dataset.term.toLowerCase();
+      const html = en.innerHTML.toLowerCase();
+      en.style.display = (term.includes(q) || html.includes(q)) ? '' : 'none';
+    });
+  });
+
+  // Language toggle
+  langBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      langBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.body.className = 'lang-' + btn.dataset.lang;
+    });
+  });
+
+  // Click TOC to close on mobile
+  tocTerms.forEach(t => {
+    t.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        document.querySelector('.sidebar').scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

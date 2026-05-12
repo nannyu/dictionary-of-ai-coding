@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "generate": "tsx internal/generate-readme.ts",
+    "generate-html": "tsx internal/generate-html.ts",
     "prepare": "husky"
   },
   "devDependencies": {
